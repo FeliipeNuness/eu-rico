@@ -42,7 +42,7 @@ NÃO VERIFICADO remoto: catálogo completo e aplicação. Consulta pública iden
 
 Evidências: `e2e-results.json`, `database-results.json`, `production-preview.json`, `remote-preflight.json`, `audit-all.json`, `audit-production.json`, `secret-scan.json`, `browser-availability.json` e screenshots sintéticos. Comandos/cobertura em [E2E-RESULTS.md](./E2E-RESULTS.md).
 
-Falhas locais corrigidas: referência SQL inválida a variável; validação de ID/theme NULL; expectativa antiga de mensagem no teste; preservação de metadados nas edições. Não há falha funcional pendente nos casos aprovados. Firefox/WebKit/bundled Chromium não estavam instalados; Edge exercitou o motor Chromium. Zoom real, leitor de tela, aparelho físico e carga máxima NÃO VERIFICADOS.
+Falhas locais corrigidas: referência SQL inválida a variável; validação de ID/theme NULL; expectativa antiga de mensagem no teste; preservação de metadados nas edições; troca de tema apagando rascunho não enviado do perfil (reproduzida em E2E e corrigida). Não há falha funcional pendente nos casos aprovados. Firefox/WebKit/bundled Chromium não estavam instalados; Edge exercitou o motor Chromium. Zoom real, leitor de tela, aparelho físico e carga máxima NÃO VERIFICADOS.
 
 ## 4. Situação por requisito
 

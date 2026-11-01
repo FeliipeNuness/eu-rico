@@ -136,6 +136,8 @@ test('backup export, invalid files, cancel, restore safety copy and theme', asyn
   await authenticated(page)
   await navigate(page, 'Configurações')
   await page.getByLabel('Seu nome', { exact: true }).fill('Perfil sintético')
+  await page.getByRole('button', { name: 'Escuro', exact: true }).click()
+  await expect(page.getByLabel('Seu nome', { exact: true })).toHaveValue('Perfil sintético')
   await page.getByRole('button', { name: 'Salvar perfil e plano' }).click()
   await expect(page.getByRole('status')).toContainText('Salvo na nuvem')
   await page.getByRole('button', { name: 'Escuro', exact: true }).click()

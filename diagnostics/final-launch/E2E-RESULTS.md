@@ -40,6 +40,7 @@
 - Teste antigo esperava mensagem de armazenamento local que mudou: ajustado para a preservação dos registros legados na arquitetura nova.
 - Validação SQL de ID/theme ausentes/NULL fortalecida e coberta por testes.
 - Preservação de metadados adicionais durante edição coberta por teste de domínio.
+- Trocar tema apagava rascunho não enviado do perfil: reproduzido e corrigido restringindo o reset do formulário a alterações confirmadas do próprio perfil/plano.
 
 Não há falha funcional conhecida nos casos automatizados aprovados. Passagem de axe não certifica acessibilidade integral.
 
