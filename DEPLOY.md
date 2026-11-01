@@ -2,6 +2,10 @@
 
 Preparação local em 01/11/2026. Nenhum deploy foi executado. Não há hospedagem existente identificada nos arquivos ou remote Git. Vercel é a opção preparada; seu plano Hobby gratuito exige uso pessoal e não comercial. Confirme elegibilidade e limites antes de publicar; se o MVP tiver finalidade comercial, escolha uma opção elegível antes de autorizar o deploy.
 
+## Banco e mudança de arquitetura
+
+Esta versão requer o schema em `supabase/migrations/202611010001_cloud.sql`. Nenhum SQL remoto foi executado. Antes de aplicar, inspecionar o catálogo com `supabase/preflight.sql`, reconciliar tabelas/funções existentes e obter aprovação específica para o projeto/ambiente correto. O DDL aborta em colisões e não adota tabelas desconhecidas. Consultar `diagnostics/final-launch/SUPABASE-MIGRATION.md`. Só publicar o frontend de nuvem após banco, grants e RLS reais passarem nos testes com duas contas autorizadas.
+
 ## Antes de autorizar publicação
 
 1. Revisar `/privacidade` e `/termos`, incluindo nome, contato, fornecedores, retenção e processo de pedidos. Os dados de contato foram fornecidos pelo responsável; `publicationReviewed` permanece `false`. Só marcar `true` após aprovação humana expressa.
@@ -41,13 +45,14 @@ npm.cmd run lint
 npm.cmd test
 npm.cmd run test:e2e
 npm.cmd run build
+npm.cmd run test:db
 node tests/smoke-production.mjs
 node tests/verify-environment.mjs
 node tests/verify-secrets.mjs
 node tests/verify-dependencies.mjs
 ```
 
-E2E usa Edge instalado, servidor isolado em `127.0.0.1:4174`, credenciais sintéticas e contextos novos. Não valida login Google real. O smoke usa o build real em `127.0.0.1:4175`; não autentica um usuário nem altera dados remotos. A consulta `/auth/v1/settings` apenas verifica configuração pública. Rede e execução do navegador precisam estar disponíveis.
+E2E usa Edge instalado, servidor isolado em `127.0.0.1:4174`, credenciais sintéticas e contextos novos. Não valida login Google real. O smoke usa o build real em `127.0.0.1:4177`; não autentica um usuário nem altera dados remotos. A consulta `/auth/v1/settings` apenas verifica configuração pública. Rede e execução do navegador precisam estar disponíveis.
 
 ## Aceitação após deploy autorizado
 
@@ -60,7 +65,7 @@ E2E usa Edge instalado, servidor isolado em `127.0.0.1:4174`, credenciais sinté
 
 ## Recuperação
 
-Preservar a versão anterior da hospedagem e o commit aprovado. Em falha, reverter a versão publicada no painel. Não apagar armazenamento local de usuários. Alterar domínio muda a origem do armazenamento: orientar exportação no endereço antigo e restauração no novo antes de desativá-lo. Backups locais não substituem backups JSON exportados.
+Preservar a versão anterior da hospedagem e o commit aprovado. Para suspender novas gravações sem apagar registros, revisar e autorizar `supabase/rollback-cloud.sql`. Não reverter para a versão apenas local supondo que ela lerá registros da nuvem: exportar os dados confirmados antes de uma transição. Em falha, reverter a versão publicada no painel. Não apagar armazenamento local de usuários. Alterar domínio muda a origem do armazenamento: orientar exportação no endereço antigo e restauração no novo antes de desativá-lo. Backups locais não substituem backups JSON exportados.
 
 ## Fontes consultadas
 

@@ -1,0 +1,13 @@
+{
+  "projectHost": "oauygidvpsfznxevpfnj.supabase.co",
+  "writesPerformed": false,
+  "keyKind": "publishable",
+  "settingsStatus": 200,
+  "googleEnabled": true,
+  "publicSettingsWithoutKeyStatus": 401,
+  "openApiStatus": 401,
+  "apiFailureCategory": "METADATA_ACCESS_RESTRICTED",
+  "exposedAnonymousPaths": [],
+  "fullCatalogInspected": false,
+  "error": null
+}

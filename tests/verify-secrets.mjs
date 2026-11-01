@@ -1,6 +1,6 @@
 import { execFileSync, spawnSync } from 'node:child_process'
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
-mkdirSync('diagnostics/launch-20261101',{recursive:true})
+mkdirSync('diagnostics/final-launch',{recursive:true})
 const files=execFileSync('git',['ls-files','--cached','--others','--exclude-standard'],{encoding:'utf8'}).trim().split(/\r?\n/).filter(Boolean)
 const findings=[]
 for(const file of files){
@@ -14,6 +14,6 @@ for(const file of files){
 }
 const sensitiveFiles=files.filter(x=>/(^|\/)\.env($|\.)/.test(x)&&!x.endsWith('.env.example'))
 const result={candidateFiles:files.length,findings,sensitiveFiles,scope:'Known secret patterns in Git candidates; not an exhaustive credential guarantee'}
-writeFileSync('diagnostics/launch-20261101/secret-scan.json',JSON.stringify(result,null,2)+'\n')
+writeFileSync('diagnostics/final-launch/secret-scan.json',JSON.stringify(result,null,2)+'\n')
 console.log(JSON.stringify(result,null,2))
 if(findings.length||sensitiveFiles.length)process.exitCode=1

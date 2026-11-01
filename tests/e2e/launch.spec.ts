@@ -2,10 +2,12 @@ import { test, expect, type Page } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 import AxeBuilder from '@axe-core/playwright'
 
-const uid = 'synthetic-launch-user'
+import { cloudDatabase, syntheticSession, USER_A } from './cloud-database'
+
+const uid = USER_A
+const databases: Awaited<ReturnType<typeof cloudDatabase>>[] = []
+test.afterEach(async () => { for (const database of databases.splice(0)) await database.close() })
 const key = `eu-rico-v1-user-${uid}`
-const date = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' })
-const empty = () => ({ name: '', theme: 'light', tasks: [], income: [], expenses: [], goals: [], savingTarget: 0, month: date().slice(0, 7) })
 
 async function navigate(page: Page, name: string) {
   if (await page.getByRole('button', { name: 'Abrir menu', exact: true }).isVisible()) await page.getByRole('button', { name: 'Abrir menu', exact: true }).click()
@@ -13,19 +15,11 @@ async function navigate(page: Page, name: string) {
 }
 
 async function authenticated(page: Page) {
-  // Browser contexts are disposable. No real Google session, storage or data is used.
-  await page.addInitScript(({ uid, key, initial }) => {
-    if (!localStorage.getItem('e2e-initialized')) {
-      localStorage.setItem('e2e-initialized', 'true')
-      localStorage.setItem(key, JSON.stringify(initial))
-      localStorage.setItem('sb-launch-test-auth-token', JSON.stringify({
-        access_token: 'synthetic-token', refresh_token: 'synthetic-refresh', token_type: 'bearer',
-        expires_at: Math.floor(Date.now() / 1000) + 3600,
-        user: { id: uid, aud: 'authenticated', role: 'authenticated', email: 'synthetic@example.invalid', app_metadata: {}, user_metadata: {}, created_at: new Date().toISOString() },
-      }))
-    }
-  }, { uid, key, initial: empty() })
-  await page.route('https://launch-test.supabase.co/**', route => route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }))
+  // PostgreSQL is real and disposable; authentication claims are synthetic.
+  const database = await cloudDatabase()
+  databases.push(database)
+  await database.attach(page)
+  await syntheticSession(page)
   page.on('dialog', dialog => dialog.accept())
   await page.goto('/')
   await expect(page.getByRole('heading', { name: /Bom dia/ })).toBeVisible()
@@ -78,7 +72,7 @@ test('tasks CRUD, filters, keyboard, persistence and synthetic logout', async ({
   await expect(page.getByRole('button', { name: 'Continuar com Google' })).toBeVisible()
   await page.reload()
   await expect(page.locator('nav')).toHaveCount(0)
-  expect(await page.evaluate(k => localStorage.getItem(k), key)).not.toBeNull()
+  expect(await page.evaluate(() => Object.keys(localStorage).some(k => k.startsWith('eu-rico-cloud-recovery-')))).toBe(true)
 })
 
 test('income and expenses CRUD, totals, validation and period', async ({ page }) => {
@@ -142,12 +136,14 @@ test('backup export, invalid files, cancel, restore safety copy and theme', asyn
   await authenticated(page)
   await navigate(page, 'Configurações')
   await page.getByLabel('Seu nome', { exact: true }).fill('Perfil sintético')
+  await page.getByRole('button', { name: 'Salvar perfil e plano' }).click()
+  await expect(page.getByRole('status')).toContainText('Salvo na nuvem')
   await page.getByRole('button', { name: 'Escuro', exact: true }).click()
   const downloadPromise = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Exportar backup' }).click()
   const download = await downloadPromise
   const exported = JSON.parse(await readFile((await download.path())!, 'utf8'))
-  expect(exported).toMatchObject({ format: 'eu-rico-backup', version: 1, data: { name: 'Perfil sintético', theme: 'dark' } })
+  expect(exported).toMatchObject({ format: 'eu-rico-backup', version: 2, data: { name: 'Perfil sintético', theme: 'dark' } })
   const input = page.getByLabel('Selecionar arquivo de backup JSON')
   await input.setInputFiles({ name: 'invalid.json', mimeType: 'application/json', buffer: Buffer.from('{invalid') })
   await expect(page.getByRole('status')).toContainText('Seus dados não foram alterados')
@@ -159,11 +155,12 @@ test('backup export, invalid files, cancel, restore safety copy and theme', asyn
   await page.getByRole('button', { name: 'Cancelar', exact: true }).click()
   await expect(page.getByLabel('Seu nome', { exact: true })).toHaveValue('Perfil sintético')
   await input.setInputFiles(file)
+  await page.getByLabel('Confirmo substituir os dados da minha conta atual por estes registros.').check()
   await page.getByRole('button', { name: 'Confirmar restauração' }).click()
   await expect(page.getByLabel('Seu nome', { exact: true })).toHaveValue('Restaurado sintético')
-  const copies = await page.evaluate(k => Object.keys(localStorage).filter(x => x.startsWith(`${k}-pre-restore-`)).map(x => JSON.parse(localStorage.getItem(x)!)), key)
+  const copies = (await databases[0].db.query('select data from public.eu_rico_recovery')).rows
   expect(copies).toHaveLength(1)
-  expect(copies[0].name).toBe('Perfil sintético')
+  expect(copies[0].data.name).toBe('Perfil sintético')
   await page.reload()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   await navigate(page, 'Configurações')
@@ -180,10 +177,10 @@ test('layout, essential accessible names and persistent storage failure', async 
     const unnamed = await page.locator('button').evaluateAll(buttons => buttons.filter(b => !b.textContent?.trim() && !b.getAttribute('aria-label') && !b.getAttribute('title')).length)
     expect(unnamed).toBe(0)
   }
-  await page.screenshot({ path: `diagnostics/launch-20261101/${testInfo.project.name}-dashboard.png`, fullPage: true })
+  await page.screenshot({ path: `diagnostics/final-launch/${testInfo.project.name}-dashboard.png`, fullPage: true })
   await page.evaluate(k => localStorage.setItem(k, '{broken'), key)
   await page.reload()
-  await expect(page.getByRole('alert')).toContainText('salvamento local está indisponível')
+  await expect(page.getByRole('alert')).toContainText('Registros inválidos preservados')
   await navigate(page, 'Configurações')
   await page.getByLabel('Seu nome', { exact: true }).fill('Não gravar')
   expect(await page.evaluate(k => localStorage.getItem(k), key)).toBe('{broken')

@@ -1,0 +1,6 @@
+{
+  "chromiumBundled": false,
+  "firefox": false,
+  "webkit": false,
+  "edge": true
+}

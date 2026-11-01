@@ -16,6 +16,7 @@ export function validateSupabaseConfig(urlValue?: string, keyValue?: string): { 
     return { config: null, error: 'VITE_SUPABASE_URL precisa ser a URL base HTTP ou HTTPS do projeto Supabase, sem caminho, parâmetros ou fragmento.' }
   }
   if (/[<>]/.test(url) || /project-ref/i.test(parsed.hostname)) return { config: null, error: 'Substitua o endereço de exemplo pela URL real do seu projeto Supabase.' }
+  if (parsed.protocol !== 'https:' && !['localhost', '127.0.0.1', '[::1]'].includes(parsed.hostname)) return { config: null, error: 'Use HTTPS para o Supabase. HTTP é permitido apenas no ambiente local.' }
 
   let role = ''
   let jwtPayloadValid = false

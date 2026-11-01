@@ -2,23 +2,23 @@ import { preview } from 'vite'
 import { chromium } from '@playwright/test'
 import { mkdir, writeFile } from 'node:fs/promises'
 
-const folder = 'diagnostics/launch-20261101'
+const folder = 'diagnostics/final-launch'
 await mkdir(folder, { recursive: true })
-const server = await preview({ configLoader: 'runner', preview: { host: '127.0.0.1', port: 4175, strictPort: true } })
+const server = await preview({ configLoader: 'runner', preview: { host: '127.0.0.1', port: 4177, strictPort: true } })
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const summary = { scope: 'Local production build preview; not a deployed production test', routes: [], pageErrors: [], failedAssets: [], oauthStart: 'NOT_VERIFIED' }
 try {
   const context = await browser.newContext({ locale: 'pt-BR', viewport: { width: 1280, height: 900 } })
   const page = await context.newPage()
   page.on('pageerror', e => summary.pageErrors.push(e.message))
-  page.on('response', r => { if (new URL(r.url()).origin === 'http://127.0.0.1:4175' && r.status() >= 400) summary.failedAssets.push({ path: new URL(r.url()).pathname, status: r.status() }) })
+  page.on('response', r => { if (new URL(r.url()).origin === 'http://127.0.0.1:4177' && r.status() >= 400) summary.failedAssets.push({ path: new URL(r.url()).pathname, status: r.status() }) })
   for (const path of ['/', '/privacidade', '/termos']) {
-    const response = await page.goto(`http://127.0.0.1:4175${path}`)
+    const response = await page.goto(`http://127.0.0.1:4177${path}`)
     await page.locator('h1').waitFor()
     await page.reload()
     summary.routes.push({ path, status: response.status(), heading: await page.locator('h1').innerText() })
   }
-  await page.goto('http://127.0.0.1:4175/')
+  await page.goto('http://127.0.0.1:4177/')
   await page.getByRole('button', { name: 'Continuar com Google' }).waitFor()
   await page.screenshot({ path: `${folder}/production-preview-login.png`, fullPage: true })
   await page.setViewportSize({ width: 390, height: 844 })

@@ -1,3 +1,4 @@
+import { canonical, localCandidates, mergeLocalData } from '../src/domain/migration.ts'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { getMonthlyTotals, goalMonthlyContribution, goalProgress, roundMoney } from '../src/domain/finance.ts'
@@ -152,4 +153,30 @@ test('OAuth redirect cancellation is translated and callback URL is cleaned', ()
   assert.match(result.message, /cancelada/)
   assert.equal(result.cleanUrl, '/')
   assert.equal(oauthRedirectError('https://app.example/'), null)
+})
+
+test('local migration preserves originals, stable IDs and explicit conflicts', () => {
+  const record = { id: 'old-id', title: 'Legacy', description: '', date: '2026-11-01', time: '', priority: 'Média', category: 'Pessoal', done: false }
+  const incoming = { ...initialData, name: 'Legacy profile', tasks: [record] }
+  const storage = new Map([[STORAGE_KEY, JSON.stringify(incoming)], [userStorageKey('other'), JSON.stringify(incoming)]])
+  const candidates = localCandidates({getItem: key => storage.get(key) ?? null}, 'current')
+  assert.equal(candidates.length, 1)
+  const merged = mergeLocalData(initialData, incoming, true)
+  assert.equal(merged.data.name, 'Legacy profile')
+  assert.equal(merged.added, 1)
+  assert.equal(mergeLocalData(merged.data, incoming).added, 0)
+  assert.equal(mergeLocalData(initialData, {...incoming,tasks:[record,{...record,id:'distinct-valid-id'}]}).added, 2)
+  assert.equal(mergeLocalData(merged.data, {...incoming,tasks:[{...record,title:'Conflict'}]}).conflicts.length, 1)
+  assert.equal(JSON.parse(storage.get(STORAGE_KEY)).tasks[0].title, 'Legacy')
+  assert.equal(canonical({x:undefined,a:1}), canonical({a:1}))
+  assert.deepEqual(upsertById([{id:'same', extra:'preserved', name:'old'}], {id:'same', name:'new'}), [{id:'same',extra:'preserved',name:'new'}])
+})
+test('cloud backups preserve identity and accept old formats without inventing an owner', () => {
+  const backup = createBackup(initialData, undefined, 'account-a')
+  assert.equal(backup.version, 2)
+  assert.equal(parseBackup(backup).ownerId, 'account-a')
+  assert.equal(parseBackup({...backup,ownerId:undefined}),null)
+  assert.equal(parseBackup({...backup,version:'2'}),null)
+  assert.equal(parseBackup(createBackup(initialData)).ownerId,undefined)
+  assert.ok(validateSupabaseConfig('http://remote.supabase.co','sb_publishable_public').error)
 })

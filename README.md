@@ -21,7 +21,7 @@ O Vite usa `http://localhost:5173` por padrão. Abra o endereço mostrado no ter
 
 O acesso é feito por Google OAuth através do Supabase Auth. Após autenticar, o aplicativo retorna à origem em que foi aberto; a sessão persistida pode ser recuperada ao recarregar a aplicação. As telas privadas exigem uma sessão ativa.
 
-Cada conta autenticada usa uma chave separada no `localStorage` deste navegador, baseada no identificador do usuário. Os dados financeiros e de organização ainda não são enviados nem sincronizados com a nuvem. Os dados antigos na chave legada não são associados automaticamente a uma conta. Use os recursos de exportação e restauração de backup para transferir dados explicitamente.
+Esta versão utiliza PostgreSQL do Supabase para tarefas, receitas, despesas, metas e preferências. O código precisa das migrations aprovadas e aplicadas antes de funcionar em um projeto real. Nenhuma migration remota foi aplicada nesta preparação. O banco associa registros a `auth.uid()`, usa RLS e aceita gravações apenas pela RPC transacional. Uma revisão por conta impede sobrescrita silenciosa por outro dispositivo. Não há modo offline completo nem atualização em tempo real: registros confirmados são carregados ao entrar ou recarregar.
 
 ## Recursos
 
@@ -30,19 +30,21 @@ Cada conta autenticada usa uma chave separada no `localStorage` deste navegador,
 - Tema claro e escuro.
 - Exportação e restauração de backups JSON.
 
-Limpar os dados do site pode apagar os registros e as cópias locais anteriores à restauração. Exporte backups regularmente. Login Google não representa sincronização financeira na nuvem. Não use o mesmo perfil do navegador em dispositivos compartilhados para guardar informações confidenciais.
+Registros locais anteriores são detectados somente para a conta atual e para a chave legada sem conta. A importação exige prévia e confirmação; originais não são apagados. Repetir a importação preserva IDs e não duplica registros; conflito de ID cancela o processo. A restauração de backup substitui a conta na nuvem e cria cópia privada anterior na mesma transação. Cópias locais de recuperação podem conter registros legíveis: proteja o dispositivo e os arquivos exportados. Limpar o navegador pode perder dados não importados ou alterações não confirmadas, mas não apaga gravações já confirmadas na nuvem.
 
 ## Preparação para lançamento
 
-Consulte [DEPLOY.md](./DEPLOY.md) e [o relatório de 01/11/2026](./diagnostics/launch-20261101/LAUNCH-READINESS.md). A configuração Vercel está preparada, mas nenhum deploy foi autorizado ou executado. Política e termos ainda dependem de aprovação humana.
+Consulte [DEPLOY.md](./DEPLOY.md), [o relatório final](./diagnostics/final-launch/LAUNCH-REPORT.md) e [o plano de migration](./diagnostics/final-launch/SUPABASE-MIGRATION.md). O relatório de `launch-20261101` é histórico da arquitetura local anterior. A configuração Vercel está preparada, mas nenhum deploy foi autorizado ou executado. Política e termos ainda dependem de aprovação humana.
 
-`npm.cmd run test:e2e` executa testes Playwright com Edge instalado, dados sintéticos, servidor próprio e contextos descartáveis. Os testes não comprovam Google OAuth real. O teste mobile usa emulação de viewport/toque no Chromium; não substitui Safari/iOS ou aparelho físico.
+`npm.cmd run test:e2e` executa testes Playwright com Edge instalado, dados sintéticos, servidor próprio e contextos descartáveis. Os testes executam as migrations e RPC em PostgreSQL embarcado descartável, com claims e sessões sintéticas. Eles não comprovam Google OAuth nem Supabase remoto reais. O teste mobile usa emulação de viewport/toque no Chromium; não substitui Safari/iOS ou aparelho físico.
 
 ## Scripts
 
 ```powershell
 npm.cmd run typecheck
 npm.cmd test
+npm.cmd run test:db
+npm.cmd run test:e2e
 npm.cmd run lint
 npm.cmd run build
 ```

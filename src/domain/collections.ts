@@ -2,7 +2,7 @@ export type Identified = { id: string }
 export function upsertById<T extends Identified>(items: T[], item: T) {
   const existingIndex = items.findIndex(value => value.id === item.id)
   if (existingIndex < 0) return [item, ...items]
-  return items.map(value => value.id === item.id ? item : value)
+  return items.map(value => value.id === item.id ? { ...value, ...item } : value)
 }
 export function removeById<T extends Identified>(items: T[], id: string) {
   return items.filter(value => value.id !== id)

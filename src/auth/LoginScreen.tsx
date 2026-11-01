@@ -47,7 +47,7 @@ export default function LoginScreen() {
         {busy ? 'Conectando com o Google…' : 'Continuar com Google'}
       </button>
       <p className="auth-privacy">Ao continuar, sua conta Google é usada apenas para autenticar seu acesso.</p>
-      <div className="auth-local-note"><b>Seus dados ficam neste dispositivo</b><span>Não há sincronização automática entre dispositivos. Limpar os dados do site pode apagar seus registros. Exporte backups regularmente.</span></div>
+      <div className="auth-local-note"><b>Seus registros acompanham sua conta</b><span>Registros confirmados são salvos na nuvem e carregados ao entrar em outro dispositivo ou recarregar. É preciso conexão para salvar. Dados locais anteriores só são importados com sua confirmação.</span></div>
       {hasLegacyData && <div className="auth-legacy"><button type="button" onClick={() => setLegacyMessage(downloadLegacyBackup())}>Baixar backup dos dados locais anteriores</button>{legacyMessage && <span role="status">{legacyMessage}</span>}<small>Seus registros antigos não serão associados automaticamente a nenhuma conta.</small></div>}
     </section>
     <footer className="auth-footer"><a href="/privacidade">Política de Privacidade</a> · <a href="/termos">Termos de Uso</a> · Privacidade e clareza para cuidar do que importa.</footer>

@@ -1,0 +1,5 @@
+{
+  "scope": "Real embedded PostgreSQL, synthetic auth claims/roles; not remote Supabase or real Google",
+  "passed": 14,
+  "failed": 0
+}

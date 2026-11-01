@@ -1,0 +1,30 @@
+{
+  "scope": "Local production build preview; not a deployed production test",
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "heading": "Um espaço só seu\npara evoluir com calma."
+    },
+    {
+      "path": "/privacidade",
+      "status": 200,
+      "heading": "Política de Privacidade"
+    },
+    {
+      "path": "/termos",
+      "status": 200,
+      "heading": "Termos de Uso"
+    }
+  ],
+  "pageErrors": [],
+  "failedAssets": [],
+  "oauthStart": {
+    "status": 302,
+    "redirectHost": "accounts.google.com",
+    "pkceS256": true,
+    "challengePresent": true,
+    "realGoogleLoginCompleted": false
+  },
+  "mobileOverflow": false
+}
