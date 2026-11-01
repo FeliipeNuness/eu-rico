@@ -46,8 +46,10 @@ Não há falha funcional conhecida nos casos automatizados aprovados. Passagem d
 
 ## NÃO VERIFICADO
 
+Tentativa Google real no Edge controlado por Playwright: **FALHOU por bloqueio do provedor**, relatado pelo usuário após informar e-mail (mensagem de navegador/app potencialmente inseguro). A tentativa automatizada foi interrompida, sem contornar a proteção. `real-auth-results.json` registra o bloqueio, não sucesso de autenticação. Uma janela normal do Edge foi aberta para reiniciar manualmente em `http://localhost:5173/`; não reutilizar URL OAuth/callback do perfil automatizado, pois PKCE depende do navegador/origem de início. [Google documenta restrições a navegadores automatizados](https://support.google.com/accounts/answer/7675428?hl=pt-BR).
+
 Google real completo (consultar `real-auth-results.json` se gerado após ação humana), callback final de produção, RLS com dois JWT reais no projeto remoto, CRUD remoto, segunda sessão real, HTTPS/CSP/headers públicos, Firefox/WebKit, aparelho físico, leitor de tela e zoom real do navegador. Não há teste de carga para o limite máximo de dados.
 
 ## Repetição
 
-`npm.cmd test`, `npm.cmd run test:db` e `npm.cmd run test:e2e`. E2E usa `127.0.0.1:4174` com config sintética só no servidor de teste. Smoke usa build real em loopback `4177`; não autentica nem grava registros reais. `node tests/real-auth.mjs` abre perfil Edge isolado e aguarda login manual; depois verifica reload/logout sem CRUD.
+`npm.cmd test`, `npm.cmd run test:db` e `npm.cmd run test:e2e`. E2E usa `127.0.0.1:4174` com config sintética só no servidor de teste. Smoke usa build real em loopback `4177`; não autentica nem grava registros reais. `tests/real-auth.mjs` foi usado na tentativa automatizada bloqueada; não repetir para contornar o provedor. O próximo teste real exige navegador normal e autenticação manual, seguido de verificação de reload/logout sem CRUD.

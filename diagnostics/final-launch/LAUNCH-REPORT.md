@@ -4,6 +4,8 @@ Data: 01/11/2026. **Parecer público: NO-GO.** A arquitetura de nuvem foi implem
 
 Estados: **PASSOU** significa evidência executada no escopo indicado; **FALHOU** significa problema confirmado; **NÃO VERIFICADO** significa prova insuficiente. Não se usa resultado sintético para aprovar OAuth ou Supabase remoto.
 
+Atualização de OAuth real: o usuário relatou que Google recusou o Edge automatizado após entrada do e-mail, por navegador/app potencialmente inseguro. **FALHOU nessa tentativa; login em navegador normal continua NÃO VERIFICADO.** A execução automatizada foi encerrada e uma janela Edge normal foi aberta para reinício manual pela raiz `http://localhost:5173/`. Nenhuma proteção foi contornada. Evidência em `real-auth-results.json`.
+
 ## 1. Implementação e arquivos
 
 PASSOU localmente:

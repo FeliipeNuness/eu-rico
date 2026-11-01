@@ -5,7 +5,7 @@
 | Checkpoint | Estado | Próxima ação concreta |
 | --- | --- | --- |
 | A — schema | NÃO VERIFICADO remoto | Confirmar ambiente de `oauygidvpsfznxevpfnj.supabase.co`, executar preflight somente leitura, reconciliar catálogo e aprovar o SQL completo em `supabase/migrations/202611010001_cloud.sql` |
-| B — OAuth real | NÃO VERIFICADO até ação humana | Entrar com conta de teste na janela Edge isolada; script não digita senha/MFA/CAPTCHA; depois verifica reload/logout |
+| B — OAuth real | FALHOU no navegador automatizado; normal NÃO VERIFICADO | Google recusou Playwright; tentativa encerrada. Reiniciar em Edge/Chrome normal por localhost:5173, autenticar manualmente e verificar reload/logout sem reutilizar URL do perfil antigo |
 | C — privacidade | NÃO VERIFICADO | Revisar política/termos novos e decisões em SECURITY.md; confirmar fornecedor/região/retenção/processo; somente após aprovação humana mudar flag |
 | D — Git remoto | NÃO VERIFICADO / sem push | Mostrar branch, commits, destino remoto e scanner antes de pedir autorização; nenhum remote configurado inicialmente |
 | E — deploy | NÃO VERIFICADO | Escolher hospedagem/origem/plano elegível e autorizar publicação do commit aprovado após banco real validado |

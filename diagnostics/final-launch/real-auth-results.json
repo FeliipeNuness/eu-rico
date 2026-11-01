@@ -1,0 +1,10 @@
+{
+  "scope": "Google login attempt in automated Edge; provider refusal reported directly by user",
+  "login": "BLOCKED_BY_PROVIDER",
+  "reload": "NOT_VERIFIED",
+  "logout": "NOT_VERIFIED",
+  "protectedAfterLogout": "NOT_VERIFIED",
+  "remoteCrudPerformed": false,
+  "reason": "Google refused the automated browser as potentially unsafe after email entry. No password, MFA, CAPTCHA or token recorded. Automated attempt stopped; ordinary browser opened for manual restart.",
+  "source": "https://support.google.com/accounts/answer/7675428?hl=pt-BR"
+}
