@@ -6,5 +6,14 @@
   "protectedAfterLogout": "NOT_VERIFIED",
   "remoteCrudPerformed": false,
   "reason": "Google refused the automated browser as potentially unsafe after email entry. No password, MFA, CAPTCHA or token recorded. Automated attempt stopped; ordinary browser opened for manual restart.",
-  "source": "https://support.google.com/accounts/answer/7675428?hl=pt-BR"
+  "source": "https://support.google.com/accounts/answer/7675428?hl=pt-BR",
+  "normalBrowser": {
+    "login": "USER_REPORTED_PASS",
+    "dashboardReached": "USER_REPORTED_PASS",
+    "reload": "NOT_VERIFIED",
+    "logout": "NOT_VERIFIED",
+    "protectedAfterLogout": "NOT_VERIFIED",
+    "cloudSchema": "NOT_PREPARED_REPORTED_BY_APP",
+    "evidence": "User reported completion of Google login and authenticated panel. Account email deliberately omitted."
+  }
 }

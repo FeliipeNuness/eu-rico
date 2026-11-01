@@ -6,6 +6,8 @@ Estados: **PASSOU** significa evidência executada no escopo indicado; **FALHOU*
 
 Atualização de OAuth real: o usuário relatou que Google recusou o Edge automatizado após entrada do e-mail, por navegador/app potencialmente inseguro. **FALHOU nessa tentativa; login em navegador normal continua NÃO VERIFICADO.** A execução automatizada foi encerrada e uma janela Edge normal foi aberta para reinício manual pela raiz `http://localhost:5173/`. Nenhuma proteção foi contornada. Evidência em `real-auth-results.json`.
 
+Atualização posterior: o responsável relatou login concluído em navegador normal e painel autenticado. **PASSOU para conclusão inicial por relato manual; verificação direta, reload/logout e banco remoto continuam NÃO VERIFICADOS.** Solicitação de nome `eu-rico-app` preparada em `OAUTH-BRANDING.md`; configuração externa de branding não alterada. Duplicação do aviso de dados locais corrigida.
+
 ## 1. Implementação e arquivos
 
 PASSOU localmente:
@@ -50,7 +52,7 @@ Falhas locais corrigidas: referência SQL inválida a variável; validação de 
 
 | Requisito | Estado e limite |
 | --- | --- |
-| Google OAuth | PASSOU no início real/PKCE; login, callback final, reload/logout reais NÃO VERIFICADOS até intervenção humana. `tests/real-auth.mjs` foi preparado sem digitar senha/MFA/CAPTCHA |
+| Google OAuth | PASSOU no início real/PKCE e conclusão inicial relatada pelo responsável em navegador normal; verificação direta e reload/logout reais NÃO VERIFICADOS. Tentativa automatizada foi bloqueada pelo Google |
 | Sincronização | PASSOU entre contextos isolados contra PostgreSQL descartável; Supabase remoto e dispositivos reais NÃO VERIFICADOS |
 | Isolamento | PASSOU em RLS/grants com roles normais e UI trocando conta; dois JWT reais no projeto remoto NÃO VERIFICADOS |
 | CRUD | PASSOU local, inclusive edição/conclusão/exclusão e cálculo de saldo; CRUD remoto não executado |

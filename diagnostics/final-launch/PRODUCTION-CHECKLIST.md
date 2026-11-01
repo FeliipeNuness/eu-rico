@@ -5,7 +5,7 @@
 | Checkpoint | Estado | Próxima ação concreta |
 | --- | --- | --- |
 | A — schema | NÃO VERIFICADO remoto | Confirmar ambiente de `oauygidvpsfznxevpfnj.supabase.co`, executar preflight somente leitura, reconciliar catálogo e aprovar o SQL completo em `supabase/migrations/202611010001_cloud.sql` |
-| B — OAuth real | FALHOU no navegador automatizado; normal NÃO VERIFICADO | Google recusou Playwright; tentativa encerrada. Reiniciar em Edge/Chrome normal por localhost:5173, autenticar manualmente e verificar reload/logout sem reutilizar URL do perfil antigo |
+| B — OAuth real | Inicial PASSOU por relato manual; reload/logout NÃO VERIFICADOS | Google recusou Playwright; responsável depois relatou login normal concluído. Falta verificar recarga, logout e bloqueio sem sessão. Branding eu-rico-app aguarda ajuste externo conforme OAUTH-BRANDING.md |
 | C — privacidade | NÃO VERIFICADO | Revisar política/termos novos e decisões em SECURITY.md; confirmar fornecedor/região/retenção/processo; somente após aprovação humana mudar flag |
 | D — Git remoto | NÃO VERIFICADO / sem push | Mostrar branch, commits, destino remoto e scanner antes de pedir autorização; nenhum remote configurado inicialmente |
 | E — deploy | NÃO VERIFICADO | Escolher hospedagem/origem/plano elegível e autorizar publicação do commit aprovado após banco real validado |

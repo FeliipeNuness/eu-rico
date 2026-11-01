@@ -48,6 +48,8 @@ Não há falha funcional conhecida nos casos automatizados aprovados. Passagem d
 
 Tentativa Google real no Edge controlado por Playwright: **FALHOU por bloqueio do provedor**, relatado pelo usuário após informar e-mail (mensagem de navegador/app potencialmente inseguro). A tentativa automatizada foi interrompida, sem contornar a proteção. `real-auth-results.json` registra o bloqueio, não sucesso de autenticação. Uma janela normal do Edge foi aberta para reiniciar manualmente em `http://localhost:5173/`; não reutilizar URL OAuth/callback do perfil automatizado, pois PKCE depende do navegador/origem de início. [Google documenta restrições a navegadores automatizados](https://support.google.com/accounts/answer/7675428?hl=pt-BR).
 
+Depois, o responsável relatou login concluído e painel autenticado em navegador normal. Conclusão inicial **PASSOU por relato manual**, sem observação direta desta sessão. Reload/logout continuam NÃO VERIFICADOS. Nenhum endereço de e-mail real foi copiado para as evidências.
+
 Google real completo (consultar `real-auth-results.json` se gerado após ação humana), callback final de produção, RLS com dois JWT reais no projeto remoto, CRUD remoto, segunda sessão real, HTTPS/CSP/headers públicos, Firefox/WebKit, aparelho físico, leitor de tela e zoom real do navegador. Não há teste de carga para o limite máximo de dados.
 
 ## Repetição
