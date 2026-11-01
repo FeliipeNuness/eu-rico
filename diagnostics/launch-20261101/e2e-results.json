@@ -1,0 +1,678 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\node_modules\\@playwright\\test\\cli.js",
+      "test"
+    ],
+    "configFile": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\playwright.config.ts",
+    "rootDir": "C:/Users/nunes/projeto-pessoal/eu-rico/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/nunes/projeto-pessoal/eu-rico/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop",
+        "name": "desktop",
+        "testDir": "C:/Users/nunes/projeto-pessoal/eu-rico/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/nunes/projeto-pessoal/eu-rico/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile",
+        "name": "mobile",
+        "testDir": "C:/Users/nunes/projeto-pessoal/eu-rico/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "desktop",
+        "testDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\tests\\e2e",
+        "snapshotDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4174",
+          "locale": "pt-BR",
+          "reducedMotion": "reduce",
+          "timezoneId": "America/Sao_Paulo",
+          "screenshot": "only-on-failure",
+          "trace": "off",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36 Edg/156.0.8078.4",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "desktop"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "mobile",
+        "testDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\tests\\e2e",
+        "snapshotDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4174",
+          "locale": "pt-BR",
+          "reducedMotion": "reduce",
+          "timezoneId": "America/Sao_Paulo",
+          "screenshot": "only-on-failure",
+          "trace": "off",
+          "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1",
+          "viewport": {
+            "width": 390,
+            "height": 664
+          },
+          "screen": {
+            "width": 390,
+            "height": 844
+          },
+          "deviceScaleFactor": 3,
+          "isMobile": true,
+          "hasTouch": true,
+          "defaultBrowserType": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "mobile"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "diagnostics/launch-20261101/e2e-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node tests/start-e2e.mjs",
+      "url": "http://127.0.0.1:4174",
+      "reuseExistingServer": false,
+      "timeout": 60000
+    }
+  },
+  "suites": [
+    {
+      "title": "launch.spec.ts",
+      "file": "launch.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "public pages, protected access and OAuth cancellation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 850,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:21.927Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-e24220d373efaa7dd6a9",
+          "file": "launch.spec.ts",
+          "line": 34,
+          "column": 1
+        },
+        {
+          "title": "tasks CRUD, filters, keyboard, persistence and synthetic logout",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1218,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:23.158Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-6e330b4756115956fc9f",
+          "file": "launch.spec.ts",
+          "line": 49,
+          "column": 1
+        },
+        {
+          "title": "income and expenses CRUD, totals, validation and period",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1053,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:24.387Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-b2beb4355629f6566fc5",
+          "file": "launch.spec.ts",
+          "line": 84,
+          "column": 1
+        },
+        {
+          "title": "goals without deadline can be edited, completed, persisted and deleted",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 757,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:25.449Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-b34db2a13fdfc77365c1",
+          "file": "launch.spec.ts",
+          "line": 120,
+          "column": 1
+        },
+        {
+          "title": "backup export, invalid files, cancel, restore safety copy and theme",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 976,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:26.214Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-d253268e93a5ce813a11",
+          "file": "launch.spec.ts",
+          "line": 141,
+          "column": 1
+        },
+        {
+          "title": "layout, essential accessible names and persistent storage failure",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 776,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:27.200Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-9f01a58901edb7e060f9",
+          "file": "launch.spec.ts",
+          "line": 173,
+          "column": 1
+        },
+        {
+          "title": "WCAG automated checks on public pages and core views",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6140,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:27.987Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "accessibility",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJ2aWV3IjogIi8iLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiL3ByaXZhY2lkYWRlIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogIi90ZXJtb3MiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAibGlnaHQvRGFzaGJvYXJkIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L1RhcmVmYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAibGlnaHQvRmluYW7Dp2FzIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L01ldGFzIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L0NvbmZpZ3VyYcOnw7VlcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJsaWdodC90YXNrLWRpYWxvZyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL0Rhc2hib2FyZCIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL1RhcmVmYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiZGFyay9GaW5hbsOnYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiZGFyay9NZXRhcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL0NvbmZpZ3VyYcOnw7VlcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL3Rhc2stZGlhbG9nIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9Cl0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-7995e1a3c3296790fb0d",
+          "file": "launch.spec.ts",
+          "line": 193,
+          "column": 1
+        },
+        {
+          "title": "public pages, protected access and OAuth cancellation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 860,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:35.518Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-c838e7d4a41759cdde2f",
+          "file": "launch.spec.ts",
+          "line": 34,
+          "column": 1
+        },
+        {
+          "title": "tasks CRUD, filters, keyboard, persistence and synthetic logout",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1284,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:36.708Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-d5904924ce03bb28624f",
+          "file": "launch.spec.ts",
+          "line": 49,
+          "column": 1
+        },
+        {
+          "title": "income and expenses CRUD, totals, validation and period",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1151,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:38.004Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-3e23920cf4034bd31876",
+          "file": "launch.spec.ts",
+          "line": 84,
+          "column": 1
+        },
+        {
+          "title": "goals without deadline can be edited, completed, persisted and deleted",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 847,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:39.167Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-ae927f6565e8065458a4",
+          "file": "launch.spec.ts",
+          "line": 120,
+          "column": 1
+        },
+        {
+          "title": "backup export, invalid files, cancel, restore safety copy and theme",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1164,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:40.025Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-e96d7ef51f318b932744",
+          "file": "launch.spec.ts",
+          "line": 141,
+          "column": 1
+        },
+        {
+          "title": "layout, essential accessible names and persistent storage failure",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1071,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:41.199Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-f5580eb75ffb15032a99",
+          "file": "launch.spec.ts",
+          "line": 173,
+          "column": 1
+        },
+        {
+          "title": "WCAG automated checks on public pages and core views",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6192,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-01T22:01:42.280Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "accessibility",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJ2aWV3IjogIi8iLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiL3ByaXZhY2lkYWRlIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogIi90ZXJtb3MiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAibGlnaHQvRGFzaGJvYXJkIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L1RhcmVmYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAibGlnaHQvRmluYW7Dp2FzIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L01ldGFzIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L0NvbmZpZ3VyYcOnw7VlcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJsaWdodC90YXNrLWRpYWxvZyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL0Rhc2hib2FyZCIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL1RhcmVmYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiZGFyay9GaW5hbsOnYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiZGFyay9NZXRhcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL0NvbmZpZ3VyYcOnw7VlcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL3Rhc2stZGlhbG9nIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9Cl0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-a0d639feb5fc9d5f3b61",
+          "file": "launch.spec.ts",
+          "line": 193,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-01T22:01:21.028Z",
+    "duration": 27886.323,
+    "expected": 14,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

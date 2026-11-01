@@ -1,0 +1,651 @@
+[
+  {
+    "view": "/",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "count": 4,
+        "targets": [
+          [
+            ".auth-eyebrow"
+          ],
+          [
+            ".auth-description"
+          ],
+          [
+            ".auth-privacy"
+          ],
+          [
+            ".auth-local-note > span"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "view": "/privacidade",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "count": 2,
+        "targets": [
+          [
+            ".privacy-eyebrow"
+          ],
+          [
+            ".privacy-updated"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "view": "/termos",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "count": 1,
+        "targets": [
+          [
+            ".privacy-updated"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "view": "Dashboard",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "count": 47,
+        "targets": [
+          [
+            ".workspace-copy > span"
+          ],
+          [
+            ".nav-label"
+          ],
+          [
+            "nav > .nav-item:nth-child(2) > span"
+          ],
+          [
+            ".nav-item:nth-child(3) > span"
+          ],
+          [
+            ".nav-item:nth-child(4) > span"
+          ],
+          [
+            ".nav-item:nth-child(5) > span"
+          ],
+          [
+            ".mini-month-head > span:nth-child(1)"
+          ],
+          [
+            ".mini-month-foot > span"
+          ],
+          [
+            ".logout > span"
+          ],
+          [
+            ".breadcrumb"
+          ],
+          [
+            ".top-date > span"
+          ],
+          [
+            ".eyebrow"
+          ],
+          [
+            "p"
+          ],
+          [
+            ".primary-button"
+          ],
+          [
+            ".task-overview > .overview-top > div:nth-child(1) > .card-kicker"
+          ],
+          [
+            "small"
+          ],
+          [
+            ".task-overview > .card-foot > span:nth-child(1)"
+          ],
+          [
+            ".task-overview > .card-foot > span:nth-child(3)"
+          ],
+          [
+            ".finance-overview > .overview-top > div:nth-child(1) > .card-kicker"
+          ],
+          [
+            ".finance-overview > .card-foot > span:nth-child(1)"
+          ],
+          [
+            ".card-foot > .green"
+          ],
+          [
+            ".spend-overview > .overview-top > div:nth-child(1) > .card-kicker"
+          ],
+          [
+            ".spend-overview > .card-foot > span:nth-child(1)"
+          ],
+          [
+            ".today-panel > .panel-heading > div > .section-overline"
+          ],
+          [
+            ".today-panel > .panel-heading > .text-link"
+          ],
+          [
+            ".empty-inline > div:nth-child(2) > span"
+          ],
+          [
+            ".focus-copy > span"
+          ],
+          [
+            ".plan-panel > .panel-heading > div > .section-overline"
+          ],
+          [
+            ".month-inline > span"
+          ],
+          [
+            ".plan-line:nth-child(3) > span"
+          ],
+          [
+            ".plan-line:nth-child(4) > span"
+          ],
+          [
+            ".plan-line:nth-child(5) > span"
+          ],
+          [
+            ".spent > span"
+          ],
+          [
+            ".spend-callout > div:nth-child(1) > span"
+          ],
+          [
+            ".savings-panel > .panel-heading > div:nth-child(1) > .section-overline"
+          ],
+          [
+            ".saving-amount > span"
+          ],
+          [
+            ".saving-foot > span"
+          ],
+          [
+            ".inline-edit"
+          ],
+          [
+            ".goals-panel > .panel-heading > div > .section-overline"
+          ],
+          [
+            ".goals-panel > .panel-heading > .text-link"
+          ],
+          [
+            ".empty-goals > div:nth-child(2) > span"
+          ],
+          [
+            ".goal-panel-foot > span:nth-child(1)"
+          ],
+          [
+            ".goal-panel-foot > span:nth-child(2)"
+          ],
+          [
+            "footer > span:nth-child(1)"
+          ],
+          [
+            "footer > span:nth-child(2)"
+          ],
+          [
+            "a[href$=\"privacidade\"]"
+          ],
+          [
+            "a[href$=\"termos\"]"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "view": "Tarefas",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "count": 27,
+        "targets": [
+          [
+            ".workspace-copy > span"
+          ],
+          [
+            ".nav-label"
+          ],
+          [
+            ".nav-item:nth-child(1) > span"
+          ],
+          [
+            ".nav-item:nth-child(3) > span"
+          ],
+          [
+            ".nav-item:nth-child(4) > span"
+          ],
+          [
+            ".nav-item:nth-child(5) > span"
+          ],
+          [
+            ".mini-month-head > span:nth-child(1)"
+          ],
+          [
+            ".mini-month-foot > span"
+          ],
+          [
+            ".logout > span"
+          ],
+          [
+            ".breadcrumb"
+          ],
+          [
+            ".top-date > span"
+          ],
+          [
+            ".page-header > div > .section-overline"
+          ],
+          [
+            ".page-header > div > p"
+          ],
+          [
+            ".page-header > .primary-button"
+          ],
+          [
+            ".selected"
+          ],
+          [
+            ".filter-tabs > button:nth-child(2)"
+          ],
+          [
+            ".filter-tabs > button:nth-child(3)"
+          ],
+          [
+            ".filter-tabs > button:nth-child(4)"
+          ],
+          [
+            ".secondary-button"
+          ],
+          [
+            ".task-section-head > div > .section-overline"
+          ],
+          [
+            ".task-count-pill"
+          ],
+          [
+            ".empty-state > p"
+          ],
+          [
+            ".empty-state > .primary-button"
+          ],
+          [
+            "footer > span:nth-child(1)"
+          ],
+          [
+            "footer > span:nth-child(2)"
+          ],
+          [
+            "a[href$=\"privacidade\"]"
+          ],
+          [
+            "a[href$=\"termos\"]"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "view": "Finanças",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "count": 50,
+        "targets": [
+          [
+            ".workspace-copy > span"
+          ],
+          [
+            ".nav-label"
+          ],
+          [
+            ".nav-item:nth-child(1) > span"
+          ],
+          [
+            "nav > .nav-item:nth-child(2) > span"
+          ],
+          [
+            ".nav-item:nth-child(4) > span"
+          ],
+          [
+            ".nav-item:nth-child(5) > span"
+          ],
+          [
+            ".mini-month-head > span:nth-child(1)"
+          ],
+          [
+            ".mini-month-foot > span"
+          ],
+          [
+            ".logout > span"
+          ],
+          [
+            ".breadcrumb"
+          ],
+          [
+            ".top-date > span"
+          ],
+          [
+            ".page-header > div > .section-overline"
+          ],
+          [
+            "div > p"
+          ],
+          [
+            ".primary-button"
+          ],
+          [
+            ".month-inline > span"
+          ],
+          [
+            ".summary-block:nth-child(1) > span"
+          ],
+          [
+            ".summary-block:nth-child(1) > small"
+          ],
+          [
+            ".summary-block:nth-child(2) > span"
+          ],
+          [
+            ".summary-block:nth-child(2) > small"
+          ],
+          [
+            ".summary-block:nth-child(3) > span"
+          ],
+          [
+            ".summary-block:nth-child(3) > small"
+          ],
+          [
+            ".plan-detail > .panel-heading > div > .section-overline"
+          ],
+          [
+            ".plan-big > span"
+          ],
+          [
+            ".plan-line:nth-child(3) > span"
+          ],
+          [
+            ".plan-line:nth-child(3) > b"
+          ],
+          [
+            ".plan-line:nth-child(4) > span"
+          ],
+          [
+            ".plan-line:nth-child(4) > b"
+          ],
+          [
+            ".plan-line:nth-child(5) > span"
+          ],
+          [
+            ".plan-line:nth-child(5) > b"
+          ],
+          [
+            ".plan-final > div > span"
+          ],
+          [
+            ".budget-unset"
+          ],
+          [
+            ".muted-copy:nth-child(10)"
+          ],
+          [
+            ".planner-box > div:nth-child(1) > span"
+          ],
+          [
+            ".planner-box > div:nth-child(1) > b"
+          ],
+          [
+            ".planner-box > div:nth-child(2) > span"
+          ],
+          [
+            ".planner-box > div:nth-child(2) > b"
+          ],
+          [
+            ".planner-box > div:nth-child(3) > span"
+          ],
+          [
+            ".planner-box > div:nth-child(3) > b"
+          ],
+          [
+            ".planner-result > b"
+          ],
+          [
+            ".income-panel > .panel-heading > div > .section-overline"
+          ],
+          [
+            ".income-panel > .empty-small"
+          ],
+          [
+            ".add-row"
+          ],
+          [
+            ".spending-panel > .panel-heading > div > .section-overline"
+          ],
+          [
+            ".text-link"
+          ],
+          [
+            "label"
+          ],
+          [
+            ".spending-panel > .empty-small"
+          ],
+          [
+            "footer > span:nth-child(1)"
+          ],
+          [
+            "footer > span:nth-child(2)"
+          ],
+          [
+            "a[href$=\"privacidade\"]"
+          ],
+          [
+            "a[href$=\"termos\"]"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "view": "Metas",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "count": 28,
+        "targets": [
+          [
+            ".workspace-copy > span"
+          ],
+          [
+            ".nav-label"
+          ],
+          [
+            ".nav-item:nth-child(1) > span"
+          ],
+          [
+            "nav > .nav-item:nth-child(2) > span"
+          ],
+          [
+            ".nav-item:nth-child(3) > span"
+          ],
+          [
+            ".nav-item:nth-child(5) > span"
+          ],
+          [
+            ".mini-month-head > span:nth-child(1)"
+          ],
+          [
+            ".mini-month-foot > span"
+          ],
+          [
+            ".logout > span"
+          ],
+          [
+            ".breadcrumb"
+          ],
+          [
+            ".top-date > span"
+          ],
+          [
+            ".section-overline"
+          ],
+          [
+            ".page-header > div > p"
+          ],
+          [
+            ".page-header > .primary-button"
+          ],
+          [
+            ".goal-summary-strip > div:nth-child(1) > span"
+          ],
+          [
+            ".goal-summary-strip > div:nth-child(2) > span"
+          ],
+          [
+            "div:nth-child(3) > span"
+          ],
+          [
+            "div:nth-child(3) > span > b"
+          ],
+          [
+            ".selected"
+          ],
+          [
+            ".filter-tabs > button:nth-child(2)"
+          ],
+          [
+            ".filter-tabs > button:nth-child(3)"
+          ],
+          [
+            ".filter-tabs > button:nth-child(4)"
+          ],
+          [
+            ".empty-state > p"
+          ],
+          [
+            ".empty-state > .primary-button"
+          ],
+          [
+            "footer > span:nth-child(1)"
+          ],
+          [
+            "footer > span:nth-child(2)"
+          ],
+          [
+            "a[href$=\"privacidade\"]"
+          ],
+          [
+            "a[href$=\"termos\"]"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "view": "Configurações",
+    "violations": [
+      {
+        "id": "color-contrast",
+        "count": 28,
+        "targets": [
+          [
+            ".workspace-copy > span"
+          ],
+          [
+            ".nav-label"
+          ],
+          [
+            ".nav-item:nth-child(1) > span"
+          ],
+          [
+            "nav > .nav-item:nth-child(2) > span"
+          ],
+          [
+            ".nav-item:nth-child(3) > span"
+          ],
+          [
+            ".nav-item:nth-child(4) > span"
+          ],
+          [
+            ".mini-month-head > span:nth-child(1)"
+          ],
+          [
+            ".mini-month-foot > span"
+          ],
+          [
+            ".logout > span"
+          ],
+          [
+            ".breadcrumb"
+          ],
+          [
+            ".top-date > span"
+          ],
+          [
+            ".section-overline"
+          ],
+          [
+            ".page-header > div > p"
+          ],
+          [
+            ".settings-section:nth-child(1) > .settings-content > p"
+          ],
+          [
+            ".settings-section:nth-child(1) > .settings-content > label"
+          ],
+          [
+            ".settings-section:nth-child(3) > .settings-content > p"
+          ],
+          [
+            ".settings-section:nth-child(3) > .settings-content > label"
+          ],
+          [
+            ".input-prefix > span"
+          ],
+          [
+            ".settings-hint"
+          ],
+          [
+            ".settings-section:nth-child(5) > .settings-content > p"
+          ],
+          [
+            ".theme-choice"
+          ],
+          [
+            ".settings-section:nth-child(7) > .settings-content > p"
+          ],
+          [
+            ".secondary-button:nth-child(1)"
+          ],
+          [
+            ".secondary-button:nth-child(2)"
+          ],
+          [
+            "footer > span:nth-child(1)"
+          ],
+          [
+            "footer > span:nth-child(2)"
+          ],
+          [
+            "a[href$=\"privacidade\"]"
+          ],
+          [
+            "a[href$=\"termos\"]"
+          ]
+        ]
+      }
+    ]
+  }
+]

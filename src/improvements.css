@@ -1,0 +1,58 @@
+/* Small overrides for readable controls across touch, keyboard and dark mode. */
+.task-actions { opacity: 1; }
+.task-actions button:focus-visible, .row-action:focus-visible, .remove-btn:focus-visible { outline: 3px solid #8ac7ac; outline-offset: 2px; }
+.task-actions button, .row-action { min-width: 30px; min-height: 30px; }
+.row-action { border: 0; border-radius: 6px; background: transparent; color:var(--muted); display: grid; place-items: center; }
+.row-action:hover { background: #f2f5f2; }
+.finance-month { justify-content: flex-end; margin: -12px 0 12px; }
+.history-filter { display: flex; align-items: center; gap: 8px; margin: 8px 0; color: var(--muted); font-size: 11px; }
+.history-filter select { max-width: 220px; height: 32px; padding: 0 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--text); }
+.budget-meter { margin-top: 14px; }
+.budget-meter small { display: block; margin-top: 6px; color: var(--muted); font-size: 10px; }
+.budget-unset { padding: 10px; background: var(--surface2); border-radius: 7px; line-height: 1.5; }
+.backup-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.restore-modal { max-width: 480px; }
+.restore-modal h2 { margin: 8px 0; font: 700 19px Manrope, sans-serif; }
+.restore-modal p, .restore-preview span, .restore-preview small { display: block; margin-top: 8px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.restore-preview { margin-top: 16px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface2); }
+.restore-preview b { font-size: 12px; }
+.restore-preview small { font-size: 10px; }
+.editing-label, .form-hint { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.form-hint { margin: -4px 0 14px; }
+.deadline-overdue { color:var(--muted) !important; }
+.expense-row, .income-row { gap: 8px; }
+.expense-info, .income-row > div { min-width: 0; }
+.expense-info span, .income-row > div span { line-height: 1.4; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #8ac7ac; outline-offset: 2px; }
+html[data-theme="dark"] .overview-card, html[data-theme="dark"] .panel, html[data-theme="dark"] .finance-summary, html[data-theme="dark"] .goal-summary-strip { background: var(--surface); color: var(--text); }
+html[data-theme="dark"] .plan-final, html[data-theme="dark"] .planner-box, html[data-theme="dark"] .spend-callout, html[data-theme="dark"] .mini-month, html[data-theme="dark"] .budget-unset, html[data-theme="dark"] .restore-preview { background: var(--surface2); }
+html[data-theme="dark"] .plan-final b, html[data-theme="dark"] .plan-line b, html[data-theme="dark"] .summary-block b, html[data-theme="dark"] .income-row strong, html[data-theme="dark"] .expense-amount { color: var(--text); }
+html[data-theme="dark"] .task-row, html[data-theme="dark"] .income-row, html[data-theme="dark"] .expense-row, html[data-theme="dark"] .panel-divider { border-color: var(--line); }
+html[data-theme="dark"] .task-actions button:hover, html[data-theme="dark"] .row-action:hover, html[data-theme="dark"] .remove-btn:hover { background: var(--surface2); }
+@media (max-width: 600px) {
+  .finance-summary { grid-template-columns: 1fr; }
+  .finance-summary .summary-block { border-right: 0; border-bottom: 1px solid var(--line); }
+  .finance-summary .summary-block:last-child { border-bottom: 0; }
+  .finance-month { margin-top: -8px; }
+  .expense-row, .income-row { flex-wrap: wrap; }
+  .expense-info, .income-row > div { flex: 1 1 55%; }
+  .expense-amount, .income-row strong { margin-left: auto; }
+  .modal-row { flex-wrap: wrap; }
+  .modal-row > .modal-field { flex-basis: 100%; }
+}
+
+.local-storage-notice,.persistence-error{padding:12px 16px;margin-bottom:18px;border:1px solid var(--line);border-radius:8px;font-size:13px;line-height:1.6;overflow-wrap:anywhere;background:var(--surface);color:var(--text)}
+.persistence-error{border:2px solid #b54730}
+
+/* Keep primary actions legible against their white labels. */
+.primary-button{background:#267257}
+
+/* Secondary text and controls follow the selected theme. */
+html[data-theme="dark"] :is(.breadcrumb b,.month-inline,.plan-line,.plan-line b,.saving-foot,.goal-summary-strip b,.goal-values b,.planner-box b,.settings-hint,.secondary-button,.text-link,.inline-edit,.green,.modal-field,.filter-tabs button,.task-section-head h2,.footer,.theme-choice,.task-count-pill,.empty-state p,.empty-small){color:#bccbc0}
+html[data-theme="dark"] :is(.secondary-button,.theme-choice,.filter-tabs button,.task-count-pill,.empty-icon,.empty-state-icon,.goal-orbit,.daily-focus,.goal-tags>span,.settings-icon,.goal-symbol,.icon-tile,.profile-avatar,.avatar,.nav-count){background:var(--surface2);color:#bccbc0}
+html[data-theme="dark"] :is(.theme-choice.chosen,.filter-tabs button.selected){background:#293a2e;color:#c1e2ca}
+html[data-theme="dark"] :is(.primary-button,.primary-button svg){color:#fff}
+html[data-theme="dark"] .red{color:#ffb1a6}
+
+html[data-theme="dark"] :is(.spend-callout b,.planner-result span){color:#bccbc0}

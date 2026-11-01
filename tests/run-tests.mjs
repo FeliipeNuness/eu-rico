@@ -1,0 +1,28 @@
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { spawnSync } from 'node:child_process'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import ts from 'typescript'
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const temp = resolve(root, 'node_modules/.tmp/eu-rico-tests')
+const modules = ['model', 'finance', 'storage', 'backup', 'tasks', 'collections']
+await mkdir(resolve(temp, 'domain'), { recursive: true })
+for (const name of modules) {
+  const source = await readFile(resolve(root, `src/domain/${name}.ts`), 'utf8')
+  const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ES2022, target: ts.ScriptTarget.ES2022 } }).outputText
+    .replace(/(from\s+['"][^'"]+)\.ts(['"])/g, '$1.js$2')
+  await writeFile(resolve(temp, `domain/${name}.js`), js)
+}
+await mkdir(resolve(temp, 'auth'), { recursive: true })
+for (const name of ['config', 'oauthErrors']) {
+  const source = await readFile(resolve(root, `src/auth/${name}.ts`), 'utf8')
+  const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ES2022, target: ts.ScriptTarget.ES2022 } }).outputText
+  await writeFile(resolve(temp, `auth/${name}.js`), js)
+}
+const testSource = (await readFile(resolve(root, 'tests/domain.test.mjs'), 'utf8'))
+  .replaceAll('../src/domain/', './domain/').replaceAll('../src/auth/', './auth/').replace(/\.ts(?=['"])/g, '.js')
+const testFile = resolve(temp, 'domain.test.mjs')
+await writeFile(testFile, testSource)
+const result = spawnSync(process.execPath, ['--test', testFile], { cwd: root, stdio: 'inherit' })
+process.exit(result.status ?? 1)
