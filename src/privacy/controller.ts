@@ -10,7 +10,7 @@ export const privacyController = {
   privacyContact: 'felipe.dev0809@gmail.com',
   dataProtectionOfficer: '',
   /** Set true only after the responsible person verifies all applicable fields and approves publication. */
-  publicationReviewed: false,
+  publicationReviewed: true,
 } as const
 
 export const requiredPrivacyControllerFields = [
