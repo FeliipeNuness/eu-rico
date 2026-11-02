@@ -1,10 +1,20 @@
 # Publicação do Eu Rico
 
-Preparação local em 01/11/2026. Nenhum deploy foi executado. Não há hospedagem existente identificada nos arquivos ou remote Git. Vercel é a opção preparada; seu plano Hobby gratuito exige uso pessoal e não comercial. Confirme elegibilidade e limites antes de publicar; se o MVP tiver finalidade comercial, escolha uma opção elegível antes de autorizar o deploy.
+## Estado em 02/11/2026
 
-## Banco e mudança de arquitetura
+As duas migrations aprovadas foram aplicadas no principal oauygidvpsfznxevpfnj após backup restaurado em laboratório e novo preflight. Seis tabelas com RLS, 24 policies, 11 índices, seis FKs e funções/grants foram verificados. O patch altera somente o SQLSTATE de conflito para PT409. Os 33 testes remotos com contas exclusivas passaram; usuários Google originais preservados. Não reaplicar migrations nem copiar dados do staging.
 
-Esta versão requer o schema em `supabase/migrations/202611010001_cloud.sql`. Nenhum SQL remoto foi executado. Antes de aplicar, inspecionar o catálogo com `supabase/preflight.sql`, reconciliar tabelas/funções existentes e obter aprovação específica para o projeto/ambiente correto. O DDL aborta em colisões e não adota tabelas desconhecidas. Consultar `diagnostics/final-launch/SUPABASE-MIGRATION.md`. Só publicar o frontend de nuvem após banco, grants e RLS reais passarem nos testes com duas contas autorizadas.
+Publicação autorizada na equipe Felipe Nunes' projects, Hobby, para uso pessoal não comercial confirmado pelo responsável. O projeto eu-rico foi criado sem deployment e exige Vercel Authentication em All Deployments. Manter essa proteção até concluir Google HTTPS, interface real e aprovação expressa de Privacidade e Termos. Nunca contratar plano ou recurso pago automaticamente.
+
+## Configuração Vercel
+
+- Repositório: https://github.com/FeliipeNuness/eu-rico, branch main, raiz do projeto.
+- Framework Vite; Node 24.x; instalação npm ci; build npm run build; saída dist.
+- Production: VITE_SUPABASE_URL do principal e sua VITE_SUPABASE_PUBLISHABLE_KEY pública. Nunca cadastrar service_role, secret, senha PostgreSQL ou Google client secret no frontend.
+- Preview: usar somente staging mbksdigxfhsnxocsjicp e sua chave pública, VITE_APP_ENV=staging e VITE_STAGING_PROJECT_REF=mbksdigxfhsnxocsjicp. Não herdar o banco principal em previews.
+- vercel.json define fallback SPA e headers. .vercelignore exclui ambientes privados, diagnósticos e backups na CLI; .gitignore protege os candidatos Git. Não enviar dumps ou arquivos privados.
+
+A URL HTTPS efetiva e o retorno OAuth serão registrados após o primeiro deploy restrito. Até esse teste, login Google em produção permanece NÃO VERIFICADO. Os comandos abaixo são um procedimento; não representam aprovação dos testes manuais pendentes.
 
 ## Antes de autorizar publicação
 

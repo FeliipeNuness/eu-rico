@@ -1,11 +1,11 @@
-import { privacyController } from '../privacy/controller'
+import { isPrivacyControllerConfigured, privacyController } from '../privacy/controller'
 
 export default function TermsOfUse({ onBack }: { onBack: () => void }) {
   return <main className="privacy-page"><article className="privacy-card" aria-labelledby="terms-title">
     <a href="/" onClick={event => { event.preventDefault(); onBack() }}>← Voltar ao Eu Rico</a>
     <h1 id="terms-title">Termos de Uso</h1>
-    <p className="privacy-updated">Versão para revisão: 1 de novembro de 2026</p>
-    <p>Estes termos precisam de aprovação do responsável antes do lançamento público.</p>
+    <p className="privacy-updated">{isPrivacyControllerConfigured ? 'Atualizados em 2 de novembro de 2026' : 'Versão para revisão: 2 de novembro de 2026'}</p>
+    {!isPrivacyControllerConfigured && <p>Estes termos precisam de aprovação do responsável antes do lançamento público.</p>}
     <h2>Finalidade e acesso</h2>
     <p>O Eu Rico é um MVP de organização pessoal de tarefas, receitas, despesas e metas. O acesso usa sua conta Google por meio do Supabase Auth. O produto não movimenta dinheiro, não se conecta a bancos e não oferece aconselhamento financeiro ou de investimento. Confira os cálculos e registros antes de tomar decisões.</p>
     <h2>Dados na conta, sincronização e backups</h2>

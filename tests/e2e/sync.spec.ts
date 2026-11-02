@@ -60,7 +60,7 @@ test('two isolated devices share confirmed records; stale writes cannot overwrit
 test('migration requires consent, preserves originals and is idempotent; old backups need confirmation', async ({ page }) => {
   const database = await cloudDatabase()
   const localKey = `eu-rico-v1-user-${USER_A}`
-  const data = { name: 'Perfil antigo', theme: 'light', savingTarget: 50, month: '2026-11', income: [], expenses: [], goals: [], tasks: [{ id: 'stable-legacy-id', title: 'Tarefa legada', description: '', date: new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' }), time: '', priority: 'Média', category: 'Pessoal', done: false }] }
+  const data = { name: 'Perfil antigo', theme: 'light', savingTarget: 50, month: '2026-11', income: [], expenses: [{ id: 'import-chart', description: 'Despesa importada', amount: 31.20, category: 'Outros', date: new Date().toLocaleDateString('sv-SE'), type: 'Variável' }], goals: [], tasks: [{ id: 'stable-legacy-id', title: 'Tarefa legada', description: '', date: new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' }), time: '', priority: 'Média', category: 'Pessoal', done: false }] }
   try {
     await page.addInitScript(({ localKey, data }) => { if (!localStorage.getItem(localKey)) localStorage.setItem(localKey, JSON.stringify(data)) }, { localKey, data })
     await open(page, database)
@@ -72,6 +72,7 @@ test('migration requires consent, preserves originals and is idempotent; old bac
     const originals = await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('eu-rico-migration-backup-')).map(key => JSON.parse(localStorage.getItem(key)!)))
     expect(originals).toEqual([data])
     await expect(page.getByRole('heading', { name: /Bom dia, Perfil/ })).toBeVisible()
+    await expect(page.locator('.category-legend')).toContainText('31,20')
     await page.getByRole('button', { name: 'Importar para esta conta' }).click()
     await expect(page.locator('.cloud-status')).toContainText('Revisão 2')
     expect((await database.db.query('select * from public.eu_rico_tasks')).rows).toHaveLength(1)

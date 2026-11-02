@@ -4,10 +4,10 @@ Painel pessoal para organizar tarefas e acompanhar a vida financeira, com receit
 
 ## Executar no Windows
 
-Requer Node.js 20 ou mais recente. No PowerShell, na pasta do projeto:
+Requer Node.js 24.x. No PowerShell, na pasta do projeto:
 
 ```powershell
-npm.cmd install
+npm.cmd ci
 Copy-Item .env.example .env.local
 notepad .env.local
 npm.cmd run dev
@@ -21,12 +21,13 @@ O Vite usa `http://localhost:5173` por padrão. Abra o endereço mostrado no ter
 
 O acesso é feito por Google OAuth através do Supabase Auth. Após autenticar, o aplicativo retorna à origem em que foi aberto; a sessão persistida pode ser recuperada ao recarregar a aplicação. As telas privadas exigem uma sessão ativa.
 
-Esta versão utiliza PostgreSQL do Supabase para tarefas, receitas, despesas, metas e preferências. O código precisa das migrations aprovadas e aplicadas antes de funcionar em um projeto real. Nenhuma migration remota foi aplicada nesta preparação. O banco associa registros a `auth.uid()`, usa RLS e aceita gravações apenas pela RPC transacional. Uma revisão por conta impede sobrescrita silenciosa por outro dispositivo. Não há modo offline completo nem atualização em tempo real: registros confirmados são carregados ao entrar ou recarregar.
+Esta versão utiliza PostgreSQL do Supabase para tarefas, receitas, despesas, metas e preferências. As migrations cloud e PT409 foram aplicadas no staging e no principal após autorização em 02/11/2026. Os 33 testes remotos com contas exclusivas passaram no principal. O banco associa registros a `auth.uid()`, usa RLS e aceita gravações apenas pela RPC transacional. Uma revisão por conta impede sobrescrita silenciosa por outro dispositivo. Não há modo offline completo nem atualização em tempo real: registros confirmados são carregados ao entrar ou recarregar.
 
 ## Recursos
 
 - Dashboard diário, tarefas e metas.
 - Receitas, despesas, orçamento e economia mensal.
+- Gráficos de evolução (3/6/12 meses), despesas por categoria e comparativo mensal, com tabela acessível.
 - Tema claro e escuro.
 - Exportação e restauração de backups JSON.
 
@@ -34,13 +35,13 @@ Registros locais anteriores são detectados somente para a conta atual e para a 
 
 ## Preparação para lançamento
 
-Consulte [DEPLOY.md](./DEPLOY.md), [o relatório final](./diagnostics/final-launch/LAUNCH-REPORT.md) e [o plano de migration](./diagnostics/final-launch/SUPABASE-MIGRATION.md). O relatório de `launch-20261101` é histórico da arquitetura local anterior. A configuração Vercel está preparada, mas nenhum deploy foi autorizado ou executado. Política e termos ainda dependem de aprovação humana.
+Consulte [DEPLOY.md](./DEPLOY.md) para configuração e gates de publicação. Os relatórios de `launch-20261101` são históricos da arquitetura local anterior. A publicação na Vercel foi autorizada, condicionada aos testes reais em HTTPS e à aprovação humana de Privacidade e Termos. Durante a homologação, todos os deployments devem exigir autenticação Vercel.
 
 `npm.cmd run test:e2e` executa testes Playwright com Edge instalado, dados sintéticos, servidor próprio e contextos descartáveis. Os testes executam as migrations e RPC em PostgreSQL embarcado descartável, com claims e sessões sintéticas. Eles não comprovam Google OAuth nem Supabase remoto reais. O teste mobile usa emulação de viewport/toque no Chromium; não substitui Safari/iOS ou aparelho físico.
 
 ## Scripts
 
-Homologação isolada: veja [supabase/STAGING.md](./supabase/STAGING.md) e [o checkpoint atualizado](./diagnostics/supabase-staging/READINESS.md). `npm.cmd run dev:staging` e `build:staging` bloqueiam o projeto principal. O staging remoto ainda precisa ser criado e autorizado; não reutilize `.env.local` para ele.
+Homologação isolada: veja [supabase/STAGING.md](./supabase/STAGING.md). `npm.cmd run dev:staging` e `build:staging` bloqueiam o projeto principal. O staging remoto `mbksdigxfhsnxocsjicp` possui as migrations cloud e PT409 e passou em 33 testes remotos anteriores. O responsável confirmou manualmente Google real, dashboard, criação, persistência após atualização e gráficos no staging. Isso não substitui a validação Google HTTPS na hospedagem de produção. Não reutilize `.env.local` para staging.
 
 ```powershell
 npm.cmd run typecheck

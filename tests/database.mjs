@@ -3,7 +3,7 @@ import { readFile, mkdir, writeFile } from 'node:fs/promises'
 import assert from 'node:assert/strict'
 import crypto from 'node:crypto'
 
-export async function createTestDatabase() {
+export async function createTestDatabase({ applyConflictPatch = true } = {}) {
   const db = new PGlite()
   await db.exec(`create role anon; create role authenticated;
     create schema auth; create table auth.users(id uuid primary key);
@@ -13,6 +13,18 @@ export async function createTestDatabase() {
     grant execute on function auth.uid() to authenticated, anon;`)
   try { await db.exec(await readFile('supabase/migrations/202611010001_cloud.sql', 'utf8')) }
   catch (error) { await db.close(); throw error }
+  if (applyConflictPatch) try {
+    const before = await db.query("select pg_get_functiondef('eu_rico_private.eu_rico_save(jsonb,bigint,uuid,boolean)'::regprocedure) definition, oid, proowner, proacl, prosecdef, proconfig from pg_proc where oid='eu_rico_private.eu_rico_save(jsonb,bigint,uuid,boolean)'::regprocedure")
+    const catalog = () => db.query("select jsonb_build_object('policies',(select jsonb_agg(to_jsonb(p)) from pg_policies p where schemaname='public'),'tables',(select jsonb_agg(jsonb_build_object('oid',oid,'rls',relrowsecurity,'acl',relacl)) from pg_class where relnamespace='public'::regnamespace and relname like 'eu_rico_%')) snapshot")
+    const originalCatalog = await catalog()
+    await db.exec(await readFile('supabase/migrations/20261102120000_revision_conflict_pt409.sql', 'utf8'))
+    const after = await db.query("select pg_get_functiondef('eu_rico_private.eu_rico_save(jsonb,bigint,uuid,boolean)'::regprocedure) definition, oid, proowner, proacl, prosecdef, proconfig from pg_proc where oid='eu_rico_private.eu_rico_save(jsonb,bigint,uuid,boolean)'::regprocedure")
+    const expected = structuredClone(before.rows[0])
+    expected.definition = expected.definition.replace("raise exception 'EU_RICO_CONFLICT' using errcode = '40001'", "raise exception 'EU_RICO_CONFLICT' using errcode = 'PT409'")
+    assert.notEqual(before.rows[0].definition, expected.definition)
+    assert.deepEqual(after.rows[0], expected)
+    assert.deepEqual(await catalog(), originalCatalog)
+  } catch (error) { await db.close(); throw error }
   return db
 }
 
@@ -33,6 +45,20 @@ export async function runDatabaseChecks() {
   const save = (uid, payload, revision, op = crypto.randomUUID(), preserve = false) => asUser(db, uid, 'select public.eu_rico_save($1::jsonb,$2,$3::uuid,$4) result', [JSON.stringify(payload), revision, op, preserve])
   const read = async uid => (await asUser(db, uid, 'select public.eu_rico_read() result')).rows[0].result
   try {
+    await check('incremental conflict patch preserves populated snapshots and fails closed on repeat', async () => {
+      const legacy = await createTestDatabase({ applyConflictPatch: false })
+      try {
+        await legacy.query('insert into auth.users values($1)', [A])
+        await asUser(legacy, A, 'select public.eu_rico_save($1::jsonb,0,$2::uuid,false)', [JSON.stringify(data), crypto.randomUUID()])
+        const before = await asUser(legacy, A, 'select public.eu_rico_read() result')
+        const patch = await readFile('supabase/migrations/20261102120000_revision_conflict_pt409.sql', 'utf8')
+        await legacy.exec(patch)
+        assert.deepEqual(await asUser(legacy, A, 'select public.eu_rico_read() result'), before)
+        await assert.rejects(legacy.exec(patch), /EU_RICO_CONFLICT_PATCH_PRECONDITION_FAILED/)
+        await legacy.exec('rollback')
+        assert.deepEqual(await asUser(legacy, A, 'select public.eu_rico_read() result'), before)
+      } finally { await legacy.close() }
+    })
     await check('migration executed on disposable PostgreSQL', async () => assert.equal((await db.query("select count(*)::int count from pg_tables where tablename like 'eu_rico_%' and rowsecurity")).rows[0].count, 6))
     await check('constraints, indexes and policies cover every private entity', async () => {
       await db.exec(await readFile('supabase/verify-cloud.sql','utf8'))
@@ -78,8 +104,9 @@ export async function runDatabaseChecks() {
       await db.exec('revoke insert,update,delete on public.eu_rico_profiles,public.eu_rico_tasks from authenticated')
     })
     await check('stale device revision rejected without overwriting', async () => {
-      await assert.rejects(save(A, { ...data, name: 'Stale' }, 0), /EU_RICO_CONFLICT/)
-      assert.equal((await read(A)).data.name, 'Synthetic')
+      const before = await read(A)
+      await assert.rejects(save(A, { ...data, name: 'Stale' }, 0), error => error.code === 'PT409' && error.message.includes('EU_RICO_CONFLICT'))
+      assert.deepEqual(await read(A), before)
     })
     await check('malformed record or duplicate ID rolls back all changes', async () => {
       await assert.rejects(save(A, { ...data, tasks: [...data.tasks, data.tasks[0]] }, 1), /EU_RICO_DUPLICATE_ID/)

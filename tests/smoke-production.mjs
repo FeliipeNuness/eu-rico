@@ -24,6 +24,7 @@ try {
   await page.setViewportSize({ width: 390, height: 844 })
   summary.mobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)
   await page.screenshot({ path: `${folder}/production-preview-mobile.png`, fullPage: true })
+  if (!process.argv.includes('--public-only')) {
   // Stop before navigation to Google. Observe the real Supabase authorization response only.
   await page.route('https://accounts.google.com/**', route => route.fulfill({ contentType: 'text/html', body: '<h1>Google navigation intentionally stopped for human authentication</h1>' }))
   try {
@@ -35,6 +36,7 @@ try {
     const location = headers.location ? new URL(headers.location) : null
     summary.oauthStart = { status: response.status(), redirectHost: location?.hostname ?? null, pkceS256: requestUrl.searchParams.get('code_challenge_method') === 's256', challengePresent: !!requestUrl.searchParams.get('code_challenge'), realGoogleLoginCompleted: false }
   } catch { summary.oauthStart = 'NOT_VERIFIED_NETWORK_OR_PROVIDER_ERROR' }
+  }
 } finally {
   await browser.close()
   await new Promise(resolve => server.httpServer.close(resolve))

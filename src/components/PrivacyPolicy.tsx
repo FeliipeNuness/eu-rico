@@ -6,7 +6,7 @@ export default function PrivacyPolicy({ onBack }: { onBack: () => void }) {
       <a href="/" onClick={event => { event.preventDefault(); onBack() }}>← Voltar ao Eu Rico</a>
       <p className="privacy-eyebrow">EU RICO · PRIVACIDADE</p>
       <h1 id="privacy-title">Política de Privacidade</h1>
-      <p className="privacy-updated">Versão para revisão: 1 de novembro de 2026</p>
+      <p className="privacy-updated">{isPrivacyControllerConfigured ? 'Atualizada em 2 de novembro de 2026' : 'Versão para revisão: 2 de novembro de 2026'}</p>
       <p>Esta política descreve o tratamento de dados no painel de tarefas, organização pessoal e planejamento financeiro do Eu Rico. O aplicativo não se conecta a bancos, não movimenta dinheiro e não oferece recomendação de investimento.</p>
 
       <h2>Controlador e contato</h2>
@@ -26,7 +26,7 @@ export default function PrivacyPolicy({ onBack }: { onBack: () => void }) {
         <li><b>Dados do painel:</b> nome de exibição, preferências de tema e orçamento, tarefas, descrições, datas, receitas, despesas e metas são enviados ao PostgreSQL do Supabase quando o usuário confirma operações. Os registros pertencem à identidade autenticada. Após ativação e validação do banco, registros confirmados são carregados ao entrar, recarregar ou solicitar atualização em outro dispositivo. Não há sincronização em tempo real nem modo offline completo.</li>
         <li><b>Dados locais anteriores e recuperação:</b> registros de versões anteriores continuam no navegador e só são enviados à conta atual após prévia e confirmação. A aplicação não procura registros locais de outras contas. Alterações enviadas também podem gerar uma cópia local de recuperação separada por conta, inclusive quando o resultado da gravação não pôde ser confirmado. Essas cópias não são criptografadas pelo aplicativo.</li>
         <li><b>Backups:</b> o usuário pode exportar JSON com os registros e o identificador da conta, e restaurar arquivos após validação e confirmação do destino. A restauração substitui os registros da conta na nuvem e preserva a versão anterior numa tabela privada de recuperação. Backups baixados ficam fora do controle do aplicativo e podem continuar em dispositivos ou serviços usados para armazená-los.</li>
-        <li><b>Dados técnicos:</b> Google, Supabase e o serviço de hospedagem podem processar informações técnicas necessárias às funções que prestam. A hospedagem não está identificada no repositório; sua identidade, práticas e contratos precisam ser verificados com o responsável antes do lançamento.</li>
+        <li><b>Dados técnicos e fornecedores:</b> a interface utiliza hospedagem Vercel; Google fornece autenticação e Supabase fornece Auth e PostgreSQL. Esses fornecedores podem processar informações técnicas necessárias aos serviços. O banco principal está configurado na região us-east-1 do Supabase; isso não determina todos os locais de processamento dos fornecedores. Consulte as políticas de <a href="https://vercel.com/legal/privacy-policy">Vercel</a>, <a href="https://supabase.com/privacy">Supabase</a> e <a href="https://policies.google.com/privacy">Google</a>. Práticas, contratos e retenções aplicáveis devem ser confirmados pelo responsável.</li>
       </ul>
 
       <h2>Bases legais</h2>

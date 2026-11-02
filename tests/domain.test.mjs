@@ -12,6 +12,46 @@ import { duplicatesIncome, upsertById, removeById } from '../src/domain/collecti
 import { userStorageKey } from '../src/domain/storage.ts'
 import { validateSupabaseConfig } from '../src/auth/config.ts'
 import { oauthRedirectError } from '../src/auth/oauthErrors.ts'
+import { financialSeries } from '../src/domain/charts.ts'
+
+test('charts preserve monthly conventions, chronology, gaps, period and monthly net', () => {
+  const data = { ...initialData, income: [{ id: 'salary', name: 'Salary', amount: 100, recurrence: 'Mensal' }, { id: 'bonus', name: 'Bonus', amount: 50, recurrence: 'Única', date: '2026-01-01' }], expenses: [{ id: 'e', description: 'e', amount: 110, category: 'Casa', date: '2026-02-01', type: 'Fixo' }] }
+  const series = financialSeries(data, '2026-02', 3)
+  assert.deepEqual(series.months.map(m => m.key), ['2025-12', '2026-01', '2026-02'])
+  assert.deepEqual(series.months.map(m => [m.income, m.expenses, m.netBalance]), [[100, 0, 100], [150, 0, 150], [100, 110, -10]])
+  assert.equal(financialSeries(data, '2026-02', 12).months.length, 12)
+  assert.equal(financialSeries(data, '2026-02', 6).months[0].key, '2025-09')
+  assert.deepEqual(financialSeries(initialData, '2026-02', 3).months.map(m => m.netBalance), [0, 0, 0])
+  assert.equal(financialSeries(data, 'invalid', 3).months.length, 0)
+})
+
+test('charts group rounded category totals, zero, high values and percentages without mutating state', () => {
+  const data = { ...initialData, income: [], expenses: [expense('a', 0.1, '2026-02-01'), expense('b', 0.2, '2026-02-02'), { ...expense('c', 0.7, '2026-02-03'), category: 'Outra categoria muito longa' }, expense('old', 99, '2025-01-01'), expense('zero', 0, '2026-02-01')] }
+  const before = JSON.stringify(data)
+  const series = financialSeries(data, '2026-02', 3)
+  assert.equal(series.totalExpenses, 1)
+  assert.deepEqual(series.categories.map(c => [c.name, c.value]), [['Outra categoria muito longa', 0.7], ['Casa', 0.3]])
+  assert.ok(Math.abs(series.categories.reduce((sum, c) => sum + c.percent, 0) - 100) < 1e-10)
+  assert.ok(Math.abs(series.categories[0].percent - 70) < 1e-10)
+  assert.equal(JSON.stringify(data), before)
+  assert.equal(financialSeries({ ...data, expenses: [expense('big', 1_000_000_000_000, '2026-02-01')] }, '2026-02', 3).months.at(-1).netBalance, -1_000_000_000_000)
+  const fractional = financialSeries({ ...data, expenses: [expense('f1', 0.005, '2026-02-01'), expense('f2', 0.005, '2026-02-01')] }, '2026-02', 3)
+  assert.equal(fractional.totalExpenses, 0.01)
+  assert.equal(fractional.categories[0].value, fractional.months.at(-1).expenses)
+})
+
+test('charts immediately project CRUD, restored/imported snapshots and account replacement', () => {
+  const a = { ...initialData, income: [], expenses: [expense('x', 10, '2026-02-01')] }
+  const edited = { ...a, expenses: upsertById(a.expenses, expense('x', 25, '2026-02-01')) }
+  assert.equal(financialSeries(edited, '2026-02', 3).totalExpenses, 25)
+  assert.equal(financialSeries({ ...edited, expenses: removeById(edited.expenses, 'x') }, '2026-02', 3).totalExpenses, 0)
+  const restored = parseBackup(JSON.parse(JSON.stringify(createBackup(edited, '2026-02-01T00:00:00Z', 'account-a'))))
+  assert.equal(restored.ownerId, 'account-a')
+  assert.equal(financialSeries(restored.data, '2026-02', 3).totalExpenses, 25)
+  const imported = mergeLocalData(initialData, restored.data)
+  assert.equal(financialSeries(imported.data, '2026-02', 3).totalExpenses, 25)
+  assert.equal(financialSeries(initialData, '2026-02', 3).totalExpenses, 0)
+})
 
 const expense = (id, amount, date, type = 'Variável') => ({ id, description: id, amount, category: 'Casa', date, type })
 const income = (id, amount, recurrence, date) => ({ id, name: id, amount, recurrence, date })
@@ -204,3 +244,24 @@ test('migration archives the exact original before upload and cancels on quota o
   assert.equal(backupMigrationSource(storage,'account-b',source,raw),null)
   assert.equal(backupMigrationSource({getItem:()=>raw,setItem:()=>{throw new Error('quota')}},'account-a',source,raw),null)
 })
+import { createCloudRepository } from '../src/cloud/repository.ts'
+
+for (const code of ['PT409', '40001']) {
+  test(`cloud conflict ${code} preserves draft and rejects once without retry`, async () => {
+    const draft = { name: 'Draft', tasks: [] }
+    const original = structuredClone(draft)
+    let calls = 0
+    const repository = createCloudRepository('synthetic-user', {
+      rpc(name, args) {
+        calls++
+        assert.equal(name, 'eu_rico_save')
+        assert.equal(args.p_expected_revision, 7)
+        assert.deepEqual(args.p_data, original)
+        return { abortSignal: async () => ({ data: null, error: { code, message: 'EU_RICO_CONFLICT' } }) }
+      },
+    })
+    await assert.rejects(repository.save(draft, 7), /Outro dispositivo alterou seus dados.*Exporte.*recarregue/)
+    assert.equal(calls, 1)
+    assert.deepEqual(draft, original)
+  })
+}

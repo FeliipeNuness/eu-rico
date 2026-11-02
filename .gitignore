@@ -19,3 +19,4 @@ build/
 /playwright-report/
 /.vercel/
 /dist-staging/
+/.private-backups/

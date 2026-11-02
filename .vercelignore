@@ -1,0 +1,22 @@
+# Upload source only. Configure public frontend variables in Vercel settings.
+.git
+.vercel
+.agents
+.codex
+node_modules
+dist
+dist-staging
+build
+diagnostics
+.private-backups
+test-results
+playwright-report
+**/.env
+**/.env.*
+**/*.log
+**/*.tsbuildinfo
+**/*.pem
+**/*.key
+**/credentials*
+**/secrets*
+eu-rico-backup-*.json

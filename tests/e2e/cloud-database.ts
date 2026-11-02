@@ -27,7 +27,7 @@ export async function cloudDatabase() {
             await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(result.rows[0].result) })
           } catch (error) {
             const failure = error as { code?: string; message: string }
-            await route.fulfill({ status: failure.code === '40001' ? 409 : 400, contentType: 'application/json', body: JSON.stringify({ code: failure.code, message: failure.message }) })
+            await route.fulfill({ status: failure.code === 'PT409' || failure.code === '40001' ? 409 : 400, contentType: 'application/json', body: JSON.stringify({ code: failure.code, message: failure.message }) })
           }
         }
         queue = queue.then(run)

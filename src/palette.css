@@ -1,0 +1,27 @@
+/* Future chart roles use the recovered premium palette; no new charts added. */
+:root {
+  --chart-income: var(--green);
+  --chart-expenses: var(--expense);
+  --chart-goals: var(--gold);
+  --chart-comparison: var(--muted);
+  --chart-grid: var(--line);
+  --chart-label: var(--text);
+  --chart-tooltip-bg: var(--surface);
+  --chart-tooltip-text: var(--text);
+}
+html[data-theme='dark'] {
+  --chart-income: var(--positive);
+  --chart-expenses: var(--expense);
+}
+/* Use an existing original neutral for accessible control boundaries. */
+.text-input, .modal-field input, .modal-field select, .history-filter select {
+  border-color: var(--muted);
+}
+/* The recovered dark positive tone keeps progress distinct from its track. */
+html[data-theme='dark'] .progress-track i,
+html[data-theme='dark'] .progress-green {
+  background: var(--positive) !important;
+}
+html[data-theme='dark'] .ring {
+  background: conic-gradient(var(--positive) var(--p), var(--line) 0);
+}

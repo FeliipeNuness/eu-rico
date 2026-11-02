@@ -1,5 +1,20 @@
 # Eu Rico — conexão de homologação
 
+## Checkpoint de provisionamento — 01/11/2026
+
+Projeto independente criado com autorização: **eu-rico-staging**, ID **mbksdigxfhsnxocsjicp**, organização **eu-rico**, plano **Free**, região **us-east-1**, custo informado **US$ 0/mês**. Estado: **ACTIVE_HEALTHY**. URL: https://mbksdigxfhsnxocsjicp.supabase.co.
+
+Leituras com transação READ ONLY confirmaram zero tabelas e policies públicas, migrations, usuários, identidades, buckets e objetos. Nenhuma função eu_rico_% ou schema eu_rico_private. preflight.sql contém somente SELECTs e foi executado em transação somente leitura. Evidência: diagnostics/supabase-staging/PROVISIONING.json.
+
+.env.staging.local foi preparado com referência, URL e chave publishable obtida exclusivamente do novo projeto. Arquivo ignorado no Git; chave não registrada nos relatórios. O principal oauygidvpsfznxevpfnj permanece intacto. Não houve migration, alteração Auth/OAuth, usuário de teste, teste com escrita, deploy ou push.
+
+Próximo checkpoint: autorização específica para supabase/migrations/202611010001_cloud.sql somente neste staging. Nenhuma aplicação autorizada neste momento.
+
+## Registro anterior de preparação (histórico)
+
+As referências abaixo a projeto ainda não criado descrevem a preparação anterior. O checkpoint acima substitui essas pendências de provisionamento; homologação de schema e OAuth continua pendente.
+
+
 O projeto principal `oauygidvpsfznxevpfnj` não é staging. Nenhum projeto remoto novo foi criado nem migration remota aplicada nesta preparação.
 
 ## Provisionamento sujeito a autorização
