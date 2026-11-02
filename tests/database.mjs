@@ -11,7 +11,8 @@ export async function createTestDatabase() {
     $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
     grant usage on schema public, auth to authenticated, anon;
     grant execute on function auth.uid() to authenticated, anon;`)
-  await db.exec(await readFile('supabase/migrations/202611010001_cloud.sql', 'utf8'))
+  try { await db.exec(await readFile('supabase/migrations/202611010001_cloud.sql', 'utf8')) }
+  catch (error) { await db.close(); throw error }
   return db
 }
 
@@ -33,6 +34,26 @@ export async function runDatabaseChecks() {
   const read = async uid => (await asUser(db, uid, 'select public.eu_rico_read() result')).rows[0].result
   try {
     await check('migration executed on disposable PostgreSQL', async () => assert.equal((await db.query("select count(*)::int count from pg_tables where tablename like 'eu_rico_%' and rowsecurity")).rows[0].count, 6))
+    await check('constraints, indexes and policies cover every private entity', async () => {
+      await db.exec(await readFile('supabase/verify-cloud.sql','utf8'))
+      assert.equal((await db.query("select count(*)::int n from pg_policies where schemaname='public' and tablename like 'eu_rico_%'")).rows[0].n, 24)
+      const constraints = (await db.query("select contype,confdeltype,count(*)::int n from pg_constraint c join pg_namespace n on n.oid=c.connamespace where n.nspname='public' group by contype,confdeltype")).rows
+      assert.equal(constraints.find(c=>c.contype==='p').n,6)
+      assert.equal(constraints.find(c=>c.contype==='f'&&c.confdeltype==='c').n,6)
+      assert.equal((await db.query("select count(*)::int n from pg_indexes where schemaname='public' and tablename like 'eu_rico_%'")).rows[0].n,11)
+      assert.equal((await db.query('select count(*)::int n from auth.users')).rows[0].n,2)
+    })
+    await check('public RPC is invoker-only and privileged code is private', async () => {
+      assert.equal((await db.query("select count(*)::int n from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.prosecdef")).rows[0].n,0)
+      assert.equal((await db.query("select count(*)::int n from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='eu_rico_private' and p.prosecdef")).rows[0].n,2)
+      assert.equal((await db.query("select has_schema_privilege('authenticated','eu_rico_private','CREATE') allowed")).rows[0].allowed,false)
+      await assert.rejects(asUser(db,null,'select eu_rico_private.eu_rico_read()'),/permission denied/)
+      await assert.rejects(asUser(db,null,'select * from public.eu_rico_profiles'),/permission denied/)
+    })
+    await check('foreign keys and revision constraints reject invalid fixtures', async () => {
+      await assert.rejects(db.query('insert into public.eu_rico_profiles(user_id,settings) values($1,$2)', ['99999999-9999-4999-8999-999999999999','{}']),/foreign key/)
+      await assert.rejects(db.query('insert into public.eu_rico_profiles(user_id,settings,revision) values($1,$2,-1)', [A,'{}']),/check constraint/)
+    })
     await check('unauthenticated RPC denied', async () => assert.rejects(read(null), /permission denied/))
     await check('initial empty account', async () => assert.deepEqual(await read(A), { revision: 0, data: null }))
     const op = crypto.randomUUID()
@@ -90,13 +111,21 @@ export async function runDatabaseChecks() {
       await save(A, { ...data, tasks: [] }, 4)
       assert.deepEqual((await read(A)).data.tasks, [])
     })
+    await check('account deletion cascades only its synthetic records', async () => {
+      await save(B,data,0,crypto.randomUUID(),true)
+      await db.query('delete from auth.users where id=$1',[B])
+      for(const table of ['profiles','tasks','income','expenses','goals','recovery']) assert.equal((await db.query(`select count(*)::int n from public.eu_rico_${table} where user_id=$1`,[B])).rows[0].n,0)
+      assert.equal((await read(A)).data.name,'Synthetic')
+    })
     await check('rollback freezes writes without deleting records', async () => {
       await db.exec(await readFile('supabase/rollback-cloud.sql', 'utf8'))
       await assert.rejects(save(A, data, 5), /permission denied/)
+      await assert.rejects(asUser(db,A,'select eu_rico_private.eu_rico_save($1::jsonb,5,$2::uuid,false)',[JSON.stringify(data),crypto.randomUUID()]),/permission denied/)
       assert.equal((await read(A)).data.name, 'Synthetic')
     })
-    await mkdir('diagnostics/final-launch', { recursive: true })
-    await writeFile('diagnostics/final-launch/database-results.json', JSON.stringify({ scope: 'Real embedded PostgreSQL, synthetic auth claims/roles; not remote Supabase or real Google', passed: count, failed: 0 }, null, 2) + '\n')
+    await mkdir('diagnostics/supabase-staging', { recursive: true })
+    const engine = (await db.query('select version() as engine')).rows[0].engine
+    await writeFile('diagnostics/supabase-staging/database-results.json', JSON.stringify({ scope: 'Real embedded PostgreSQL, synthetic auth claims/roles; not remote Supabase or real Google', engine, passed: count, failed: 0 }, null, 2) + '\n')
   } finally { await db.close() }
 }
 if (process.argv[1]?.endsWith('database.mjs')) await runDatabaseChecks().catch(error => { console.error(error.message, error.code ?? ''); process.exitCode = 1 })

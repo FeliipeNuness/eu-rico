@@ -2,6 +2,8 @@
 -- Requires authorization on remote environments. Do not DROP tables with user data.
 begin;
 revoke execute on function public.eu_rico_save(jsonb,bigint,uuid,boolean) from authenticated;
+revoke execute on function eu_rico_private.eu_rico_save(jsonb,bigint,uuid,boolean) from authenticated;
 commit;
 -- To resume after a reviewed fix:
 -- grant execute on function public.eu_rico_save(jsonb,bigint,uuid,boolean) to authenticated;
+-- grant execute on function eu_rico_private.eu_rico_save(jsonb,bigint,uuid,boolean) to authenticated;

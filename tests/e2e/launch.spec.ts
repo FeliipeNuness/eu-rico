@@ -179,7 +179,7 @@ test('layout, essential accessible names and persistent storage failure', async 
     const unnamed = await page.locator('button').evaluateAll(buttons => buttons.filter(b => !b.textContent?.trim() && !b.getAttribute('aria-label') && !b.getAttribute('title')).length)
     expect(unnamed).toBe(0)
   }
-  await page.screenshot({ path: `diagnostics/final-launch/${testInfo.project.name}-dashboard.png`, fullPage: true })
+  await page.screenshot({ path: `diagnostics/supabase-staging/${testInfo.project.name}-dashboard.png`, fullPage: true })
   await page.evaluate(k => localStorage.setItem(k, '{broken'), key)
   await page.reload()
   await expect(page.getByRole('alert')).toContainText('Registros inválidos preservados')

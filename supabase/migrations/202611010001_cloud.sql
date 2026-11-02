@@ -1,6 +1,10 @@
 -- Prepared locally. Requires separate authorization for any remote execution.
 -- Additive schema; collisions abort instead of adopting unknown existing tables.
 begin;
+create schema eu_rico_private;
+revoke all on schema eu_rico_private from public, anon, authenticated;
+grant usage on schema eu_rico_private to authenticated;
+
 create table public.eu_rico_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   settings jsonb not null,
@@ -76,6 +80,8 @@ create table public.eu_rico_recovery (
   created_at timestamptz not null default now()
 );
 
+create index eu_rico_recovery_user_id_created_at_idx on public.eu_rico_recovery(user_id,created_at desc);
+
 do $$
 declare relation text;
 begin
@@ -91,7 +97,7 @@ begin
   end loop;
 end $$;
 
-create function public.eu_rico_read() returns jsonb
+create function eu_rico_private.eu_rico_read() returns jsonb
 language plpgsql security definer set search_path = '' as $$
 declare owner_id uuid := auth.uid(); profile public.eu_rico_profiles; document jsonb; kind text; items jsonb;
 begin
@@ -107,7 +113,7 @@ begin
   return jsonb_build_object('revision',profile.revision,'data',document);
 end $$;
 
-create function public.eu_rico_save(p_data jsonb, p_expected_revision bigint, p_operation_id uuid, p_preserve boolean default false) returns jsonb
+create function eu_rico_private.eu_rico_save(p_data jsonb, p_expected_revision bigint, p_operation_id uuid, p_preserve boolean default false) returns jsonb
 language plpgsql security definer set search_path = '' as $$
 declare owner_id uuid := auth.uid(); profile public.eu_rico_profiles; kind text; item jsonb; item_position integer; new_settings jsonb;
 begin
@@ -126,10 +132,10 @@ begin
   new_settings := p_data - array['tasks','income','expenses','goals'];
   insert into public.eu_rico_profiles(user_id,settings) values(owner_id,new_settings) on conflict(user_id) do nothing;
   select * into profile from public.eu_rico_profiles where user_id = owner_id for update;
-  if profile.last_operation_id = p_operation_id then return public.eu_rico_read(); end if;
+  if profile.last_operation_id = p_operation_id then return eu_rico_private.eu_rico_read(); end if;
   if profile.revision <> p_expected_revision then raise exception 'EU_RICO_CONFLICT' using errcode = '40001'; end if;
   if p_preserve then
-    insert into public.eu_rico_recovery(user_id,data,revision) values(owner_id,public.eu_rico_read()->'data',profile.revision);
+    insert into public.eu_rico_recovery(user_id,data,revision) values(owner_id,eu_rico_private.eu_rico_read()->'data',profile.revision);
   end if;
   foreach kind in array array['tasks','income','expenses','goals'] loop
     execute format('delete from public.eu_rico_%I where user_id = $1',kind) using owner_id;
@@ -142,8 +148,23 @@ begin
     end loop;
   end loop;
   update public.eu_rico_profiles set settings = new_settings, revision = revision + 1, last_operation_id = p_operation_id, updated_at = now() where user_id = owner_id;
-  return public.eu_rico_read();
+  return eu_rico_private.eu_rico_read();
 end $$;
+
+-- Public API stays unprivileged. Definer implementations live in a non-exposed schema.
+create function public.eu_rico_read() returns jsonb
+language sql security invoker set search_path = '' as $$
+  select eu_rico_private.eu_rico_read();
+$$;
+create function public.eu_rico_save(p_data jsonb, p_expected_revision bigint, p_operation_id uuid, p_preserve boolean default false) returns jsonb
+language sql security invoker set search_path = '' as $$
+  select eu_rico_private.eu_rico_save(p_data,p_expected_revision,p_operation_id,p_preserve);
+$$;
+
+revoke all on function eu_rico_private.eu_rico_read() from public, anon;
+revoke all on function eu_rico_private.eu_rico_save(jsonb,bigint,uuid,boolean) from public, anon;
+grant execute on function eu_rico_private.eu_rico_read() to authenticated;
+grant execute on function eu_rico_private.eu_rico_save(jsonb,bigint,uuid,boolean) to authenticated;
 
 -- Definer functions have no user_id argument and derive ownership exclusively from auth.uid().
 revoke all on function public.eu_rico_read() from public, anon;

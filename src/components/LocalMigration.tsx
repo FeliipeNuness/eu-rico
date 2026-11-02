@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { localCandidates, mergeLocalData, recordKinds } from '../domain/migration'
 import type { Data } from '../domain/model'
+import { backupMigrationSource } from '../domain/storage'
 
 type Props = { userId: string; account: string; data: Data; revision: number; disabled: boolean; onImport: (data: Data) => Promise<boolean>; onExport: (data: Data) => void }
 export default function LocalMigration({ userId, account, data, revision, disabled, onImport, onExport }: Props) {
@@ -27,11 +28,15 @@ export default function LocalMigration({ userId, account, data, revision, disabl
         <p>{preview.added} novos · {preview.matched} já existentes · {preview.conflicts.length} conflitos.</p>
         <button className="secondary-button" onClick={() => onExport(incoming)}>Exportar backup local antes de importar</button>{' '}
         <button className="primary-button" disabled={disabled || !confirmed || !!preview.conflicts.length} onClick={async () => {
+          setResult('')
+          let backupKey: string | null = null
+          try { backupKey = backupMigrationSource(window.localStorage, userId, candidate.key, candidate.raw!) } catch { /* Do not import when local recovery is unavailable. */ }
+          if (!backupKey) { setResult('Não foi possível criar o backup do original local. Importação cancelada; nenhum registro foi enviado.'); return }
           if (await onImport(preview.data)) setResult('Importação confirmada na nuvem. Os originais locais foram mantidos.')
         }}>Importar para esta conta</button>
         {!!preview.conflicts.length && <p role="alert">Importação cancelada por conflito: {preview.conflicts.join(', ')}. Exporte o backup e revise os registros antes de importar novamente.</p>}
       </div>
     })}
-    {result && <p role="status">{result}</p>}
+    {result && <p role={result.startsWith('Não') ? 'alert' : 'status'}>{result}</p>}
   </section>
 }

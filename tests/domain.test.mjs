@@ -1,3 +1,5 @@
+import { backupMigrationSource } from '../src/domain/storage.ts'
+import { stagingTargetError, PROTECTED_PROJECT_REF } from '../src/auth/environment.ts'
 import { canonical, localCandidates, mergeLocalData } from '../src/domain/migration.ts'
 import test from 'node:test'
 import assert from 'node:assert/strict'
@@ -179,4 +181,26 @@ test('cloud backups preserve identity and accept old formats without inventing a
   assert.equal(parseBackup({...backup,version:'2'}),null)
   assert.equal(parseBackup(createBackup(initialData)).ownerId,undefined)
   assert.ok(validateSupabaseConfig('http://remote.supabase.co','sb_publishable_public').error)
+})
+
+test('staging refuses the principal project, inherited defaults and mismatched refs', () => {
+  const ref = 'abcdefghijklmnopqrst'
+  assert.ok(stagingTargetError('staging',undefined,'https://'+PROTECTED_PROJECT_REF+'.supabase.co'))
+  assert.ok(stagingTargetError('staging','staging','https://'+PROTECTED_PROJECT_REF+'.supabase.co',PROTECTED_PROJECT_REF))
+  assert.ok(stagingTargetError('staging','staging','https://'+ref+'.supabase.co','different'))
+  assert.ok(stagingTargetError('staging','staging','http://'+ref+'.supabase.co',ref))
+  assert.equal(stagingTargetError('staging','staging','https://'+ref+'.supabase.co',ref),null)
+  assert.equal(stagingTargetError('production',undefined,'https://'+PROTECTED_PROJECT_REF+'.supabase.co'),null)
+})
+
+test('migration archives the exact original before upload and cancels on quota or wrong account', () => {
+  const source = userStorageKey('account-a'), raw = JSON.stringify({...initialData,name:'Original'})
+  const entries = new Map([[source,raw]])
+  const storage = { getItem:key=>entries.get(key)??null, setItem:(key,value)=>entries.set(key,value) }
+  const key = backupMigrationSource(storage,'account-a',source,raw)
+  assert.ok(key)
+  assert.equal(entries.get(key),raw)
+  assert.equal(entries.get(source),raw)
+  assert.equal(backupMigrationSource(storage,'account-b',source,raw),null)
+  assert.equal(backupMigrationSource({getItem:()=>raw,setItem:()=>{throw new Error('quota')}},'account-a',source,raw),null)
 })

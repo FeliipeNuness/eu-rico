@@ -1,0 +1,1298 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\node_modules\\@playwright\\test\\cli.js",
+      "test"
+    ],
+    "configFile": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\playwright.config.ts",
+    "rootDir": "C:/Users/nunes/projeto-pessoal/eu-rico/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/nunes/projeto-pessoal/eu-rico/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop",
+        "name": "desktop",
+        "testDir": "C:/Users/nunes/projeto-pessoal/eu-rico/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/nunes/projeto-pessoal/eu-rico/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile",
+        "name": "mobile",
+        "testDir": "C:/Users/nunes/projeto-pessoal/eu-rico/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "desktop",
+        "testDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\tests\\e2e",
+        "snapshotDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4174",
+          "locale": "pt-BR",
+          "reducedMotion": "reduce",
+          "timezoneId": "America/Sao_Paulo",
+          "screenshot": "only-on-failure",
+          "trace": "off",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36 Edg/156.0.8078.4",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "desktop"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "mobile",
+        "testDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\tests\\e2e",
+        "snapshotDir": "C:\\Users\\nunes\\projeto-pessoal\\eu-rico\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4174",
+          "locale": "pt-BR",
+          "reducedMotion": "reduce",
+          "timezoneId": "America/Sao_Paulo",
+          "screenshot": "only-on-failure",
+          "trace": "off",
+          "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1",
+          "viewport": {
+            "width": 390,
+            "height": 664
+          },
+          "screen": {
+            "width": 390,
+            "height": 844
+          },
+          "deviceScaleFactor": 3,
+          "isMobile": true,
+          "hasTouch": true,
+          "defaultBrowserType": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "mobile"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "diagnostics/supabase-staging/e2e-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node tests/start-e2e.mjs",
+      "url": "http://127.0.0.1:4174",
+      "reuseExistingServer": false,
+      "timeout": 60000
+    }
+  },
+  "suites": [
+    {
+      "title": "launch.spec.ts",
+      "file": "launch.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "public pages, protected access and OAuth cancellation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1699,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:09.725Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-e24220d373efaa7dd6a9",
+          "file": "launch.spec.ts",
+          "line": 28,
+          "column": 1
+        },
+        {
+          "title": "tasks CRUD, filters, keyboard, persistence and synthetic logout",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2771,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:13.301Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-6e330b4756115956fc9f",
+          "file": "launch.spec.ts",
+          "line": 43,
+          "column": 1
+        },
+        {
+          "title": "income and expenses CRUD, totals, validation and period",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2770,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:16.082Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-b2beb4355629f6566fc5",
+          "file": "launch.spec.ts",
+          "line": 78,
+          "column": 1
+        },
+        {
+          "title": "goals without deadline can be edited, completed, persisted and deleted",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1649,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:18.862Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-b34db2a13fdfc77365c1",
+          "file": "launch.spec.ts",
+          "line": 114,
+          "column": 1
+        },
+        {
+          "title": "backup export, invalid files, cancel, restore safety copy and theme",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1860,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:20.520Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-d253268e93a5ce813a11",
+          "file": "launch.spec.ts",
+          "line": 135,
+          "column": 1
+        },
+        {
+          "title": "layout, essential accessible names and persistent storage failure",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1678,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:22.390Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-9f01a58901edb7e060f9",
+          "file": "launch.spec.ts",
+          "line": 172,
+          "column": 1
+        },
+        {
+          "title": "WCAG automated checks on public pages and core views",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6657,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:24.077Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "accessibility",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJ2aWV3IjogIi8iLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiL3ByaXZhY2lkYWRlIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogIi90ZXJtb3MiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAibGlnaHQvRGFzaGJvYXJkIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L1RhcmVmYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAibGlnaHQvRmluYW7Dp2FzIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L01ldGFzIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L0NvbmZpZ3VyYcOnw7VlcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJsaWdodC90YXNrLWRpYWxvZyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL0Rhc2hib2FyZCIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL1RhcmVmYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiZGFyay9GaW5hbsOnYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiZGFyay9NZXRhcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL0NvbmZpZ3VyYcOnw7VlcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL3Rhc2stZGlhbG9nIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9Cl0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-7995e1a3c3296790fb0d",
+          "file": "launch.spec.ts",
+          "line": 192,
+          "column": 1
+        },
+        {
+          "title": "public pages, protected access and OAuth cancellation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 825,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:00.102Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-c838e7d4a41759cdde2f",
+          "file": "launch.spec.ts",
+          "line": 28,
+          "column": 1
+        },
+        {
+          "title": "tasks CRUD, filters, keyboard, persistence and synthetic logout",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6184,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:01.152Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-d5904924ce03bb28624f",
+          "file": "launch.spec.ts",
+          "line": 43,
+          "column": 1
+        },
+        {
+          "title": "income and expenses CRUD, totals, validation and period",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1940,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:07.353Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-3e23920cf4034bd31876",
+          "file": "launch.spec.ts",
+          "line": 78,
+          "column": 1
+        },
+        {
+          "title": "goals without deadline can be edited, completed, persisted and deleted",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1667,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:09.303Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-ae927f6565e8065458a4",
+          "file": "launch.spec.ts",
+          "line": 114,
+          "column": 1
+        },
+        {
+          "title": "backup export, invalid files, cancel, restore safety copy and theme",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2011,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:10.980Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-e96d7ef51f318b932744",
+          "file": "launch.spec.ts",
+          "line": 135,
+          "column": 1
+        },
+        {
+          "title": "layout, essential accessible names and persistent storage failure",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1851,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:13.001Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-f5580eb75ffb15032a99",
+          "file": "launch.spec.ts",
+          "line": 172,
+          "column": 1
+        },
+        {
+          "title": "WCAG automated checks on public pages and core views",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6832,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:14.871Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "accessibility",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJ2aWV3IjogIi8iLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiL3ByaXZhY2lkYWRlIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogIi90ZXJtb3MiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAibGlnaHQvRGFzaGJvYXJkIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L1RhcmVmYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAibGlnaHQvRmluYW7Dp2FzIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L01ldGFzIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9LAogIHsKICAgICJ2aWV3IjogImxpZ2h0L0NvbmZpZ3VyYcOnw7VlcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJsaWdodC90YXNrLWRpYWxvZyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL0Rhc2hib2FyZCIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL1RhcmVmYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiZGFyay9GaW5hbsOnYXMiLAogICAgInZpb2xhdGlvbnMiOiBbXQogIH0sCiAgewogICAgInZpZXciOiAiZGFyay9NZXRhcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL0NvbmZpZ3VyYcOnw7VlcyIsCiAgICAidmlvbGF0aW9ucyI6IFtdCiAgfSwKICB7CiAgICAidmlldyI6ICJkYXJrL3Rhc2stZGlhbG9nIiwKICAgICJ2aW9sYXRpb25zIjogW10KICB9Cl0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dbef296c55402b17a338-a0d639feb5fc9d5f3b61",
+          "file": "launch.spec.ts",
+          "line": 192,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "sync.spec.ts",
+      "file": "sync.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "two isolated devices share confirmed records; stale writes cannot overwrite",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2837,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:30.758Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-80cdbf4028aa0e1028c3",
+          "file": "sync.spec.ts",
+          "line": 21,
+          "column": 1
+        },
+        {
+          "title": "migration requires consent, preserves originals and is idempotent; old backups need confirmation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1471,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:33.602Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-5573c8025ab0bd27a89b",
+          "file": "sync.spec.ts",
+          "line": 60,
+          "column": 1
+        },
+        {
+          "title": "failed save is not acknowledged, preserves draft and reload keeps confirmed data",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1431,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:35.082Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-79fd9178ef4b72eee405",
+          "file": "sync.spec.ts",
+          "line": 89,
+          "column": 1
+        },
+        {
+          "title": "load failure preserves local records and blocks edits until retry",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1169,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:36.523Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-92a0ad39e0e38db5c09a",
+          "file": "sync.spec.ts",
+          "line": 106,
+          "column": 1
+        },
+        {
+          "title": "switching account in same browser clears previous account records",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1397,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:37.702Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-14da50b7044a095bdefd",
+          "file": "sync.spec.ts",
+          "line": 119,
+          "column": 1
+        },
+        {
+          "title": "expired session with rejected refresh returns to protected login",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1296,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:39.108Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-b027ad4c1a3e925fc326",
+          "file": "sync.spec.ts",
+          "line": 140,
+          "column": 1
+        },
+        {
+          "title": "timeout preserves draft and never confirms save",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16424,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:40.413Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-20e45c18a207699bf0ed",
+          "file": "sync.spec.ts",
+          "line": 159,
+          "column": 1
+        },
+        {
+          "title": "migration failure leaves original intact and requires reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1272,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:56.846Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-7a4a6a8afff1c5976a91",
+          "file": "sync.spec.ts",
+          "line": 172,
+          "column": 1
+        },
+        {
+          "title": "migration cancels before upload when original backup cannot be written",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1235,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:13:58.129Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-9c955e5b78381f7e855b",
+          "file": "sync.spec.ts",
+          "line": 188,
+          "column": 1
+        },
+        {
+          "title": "two isolated devices share confirmed records; stale writes cannot overwrite",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3034,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:21.732Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-7c3c73a67275ee9c6774",
+          "file": "sync.spec.ts",
+          "line": 21,
+          "column": 1
+        },
+        {
+          "title": "migration requires consent, preserves originals and is idempotent; old backups need confirmation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1711,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:24.773Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-142c87ad55494be7d744",
+          "file": "sync.spec.ts",
+          "line": 60,
+          "column": 1
+        },
+        {
+          "title": "failed save is not acknowledged, preserves draft and reload keeps confirmed data",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1461,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:26.491Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-5b417e9679b534e3607b",
+          "file": "sync.spec.ts",
+          "line": 89,
+          "column": 1
+        },
+        {
+          "title": "load failure preserves local records and blocks edits until retry",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1198,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:27.962Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-bd5d802a902af5adf4dc",
+          "file": "sync.spec.ts",
+          "line": 106,
+          "column": 1
+        },
+        {
+          "title": "switching account in same browser clears previous account records",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1454,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:29.169Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-fa7ce0afc09fe5600846",
+          "file": "sync.spec.ts",
+          "line": 119,
+          "column": 1
+        },
+        {
+          "title": "expired session with rejected refresh returns to protected login",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1354,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:30.632Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-1a435b90a7f7549f380e",
+          "file": "sync.spec.ts",
+          "line": 140,
+          "column": 1
+        },
+        {
+          "title": "timeout preserves draft and never confirms save",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16553,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:31.998Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-6c7c0b4aa4007214e8d0",
+          "file": "sync.spec.ts",
+          "line": 159,
+          "column": 1
+        },
+        {
+          "title": "migration failure leaves original intact and requires reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1395,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:48.560Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-0cba729aff9f3c276622",
+          "file": "sync.spec.ts",
+          "line": 172,
+          "column": 1
+        },
+        {
+          "title": "migration cancels before upload when original backup cannot be written",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1313,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-02T00:14:49.969Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0cc518b4e81cfdbffc61-8e4d002c15b8b4348142",
+          "file": "sync.spec.ts",
+          "line": 188,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-02T00:13:07.979Z",
+    "duration": 103736.15999999999,
+    "expected": 32,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

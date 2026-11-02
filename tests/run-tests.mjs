@@ -15,7 +15,7 @@ for (const name of modules) {
   await writeFile(resolve(temp, `domain/${name}.js`), js)
 }
 await mkdir(resolve(temp, 'auth'), { recursive: true })
-for (const name of ['config', 'oauthErrors']) {
+for (const name of ['config', 'oauthErrors', 'environment']) {
   const source = await readFile(resolve(root, `src/auth/${name}.ts`), 'utf8')
   const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ES2022, target: ts.ScriptTarget.ES2022 } }).outputText
   await writeFile(resolve(temp, `auth/${name}.js`), js)

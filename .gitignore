@@ -5,6 +5,7 @@ build/
 **/.env
 **/.env.*
 !.env.example
+!.env.staging.example
 **/*.log
 **/.npmrc
 **/.pypirc
@@ -17,3 +18,4 @@ build/
 /test-results/
 /playwright-report/
 /.vercel/
+/dist-staging/

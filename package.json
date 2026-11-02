@@ -11,7 +11,11 @@
     "test": "node tests/run-tests.mjs",
     "test:e2e": "playwright test",
     "preview": "vite preview --host 127.0.0.1",
-    "test:db": "node tests/database.mjs"
+    "test:db": "node tests/database.mjs",
+    "dev:staging": "vite --configLoader runner --mode staging --host 127.0.0.1 --port 5176 --strictPort",
+    "build:staging": "tsc -b && vite build --configLoader runner --mode staging",
+    "preview:staging": "vite preview --configLoader runner --mode staging --host 127.0.0.1 --port 4178 --strictPort",
+    "test:staging-target": "node tests/staging-target.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

@@ -1,0 +1,20 @@
+{
+  "availableProjects": [
+    {
+      "id": "oauygidvpsfznxevpfnj",
+      "name": "eu-rico-project",
+      "region": "us-east-1",
+      "protected": true
+    }
+  ],
+  "selectedExistingStaging": null,
+  "proposedProject": {
+    "name": "eu-rico-staging",
+    "id": null,
+    "organization": "Awaiting user's selection",
+    "regionProposal": "us-east-1",
+    "cost": "NOT_VERIFIED",
+    "creationAuthorized": false
+  },
+  "remoteWrites": false
+}

@@ -40,6 +40,8 @@ Consulte [DEPLOY.md](./DEPLOY.md), [o relatório final](./diagnostics/final-laun
 
 ## Scripts
 
+Homologação isolada: veja [supabase/STAGING.md](./supabase/STAGING.md) e [o checkpoint atualizado](./diagnostics/supabase-staging/READINESS.md). `npm.cmd run dev:staging` e `build:staging` bloqueiam o projeto principal. O staging remoto ainda precisa ser criado e autorizado; não reutilize `.env.local` para ele.
+
 ```powershell
 npm.cmd run typecheck
 npm.cmd test

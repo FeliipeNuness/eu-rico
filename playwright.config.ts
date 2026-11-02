@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: false,
   workers: 1,
-  reporter: [['list'], ['json', { outputFile: 'diagnostics/final-launch/e2e-results.json' }]],
+  reporter: [['list'], ['json', { outputFile: 'diagnostics/supabase-staging/e2e-results.json' }]],
   outputDir: 'test-results',
   use: { baseURL: 'http://127.0.0.1:4174', locale: 'pt-BR', reducedMotion: 'reduce', timezoneId: 'America/Sao_Paulo', screenshot: 'only-on-failure', trace: 'off' },
   projects: [

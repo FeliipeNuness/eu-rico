@@ -1,0 +1,25 @@
+{
+  "scope": "Build target checks, synthetic configuration only; no remote connection",
+  "cases": [
+    {
+      "name": "missing explicit staging environment",
+      "passed": true,
+      "exitCode": 1
+    },
+    {
+      "name": "principal project denied",
+      "passed": true,
+      "exitCode": 1
+    },
+    {
+      "name": "mismatched project denied",
+      "passed": true,
+      "exitCode": 1
+    },
+    {
+      "name": "synthetic staging builds without network or real credentials",
+      "passed": true,
+      "exitCode": 0
+    }
+  ]
+}

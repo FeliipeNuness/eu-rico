@@ -3,6 +3,16 @@ import { initialData, STORAGE_KEY, validateData, type Data } from './model.ts'
 export type LoadResult = { data: Data; canWrite: boolean; message?: string }
 export const userStorageKey = (userId: string) => `${STORAGE_KEY}-user-${encodeURIComponent(userId)}`
 
+export function backupMigrationSource(storage: Pick<Storage, 'getItem' | 'setItem'>, userId: string, sourceKey: string, raw: string): string | null {
+  if (![STORAGE_KEY, userStorageKey(userId)].includes(sourceKey)) return null
+  try {
+    if (storage.getItem(sourceKey) !== raw) return null
+    const key = `eu-rico-migration-backup-${encodeURIComponent(userId)}-${crypto.randomUUID()}`
+    storage.setItem(key, raw)
+    return storage.getItem(key) === raw ? key : null
+  } catch { return null }
+}
+
 export function loadData(storage: Pick<Storage, 'getItem'> | null, key = STORAGE_KEY): LoadResult {
   if (!storage) return { data: initialData, canWrite: false, message: 'O armazenamento local está indisponível. Seus dados não serão sobrescritos.' }
   let raw: string | null

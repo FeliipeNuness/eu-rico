@@ -69,6 +69,8 @@ test('migration requires consent, preserves originals and is idempotent; old bac
     await page.getByLabel('Confirmo que estes registros podem ser importados para minha conta atual.').check()
     await page.getByRole('button', { name: 'Importar para esta conta' }).click()
     await expect(page.getByRole('status')).toContainText('Importação confirmada')
+    const originals = await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('eu-rico-migration-backup-')).map(key => JSON.parse(localStorage.getItem(key)!)))
+    expect(originals).toEqual([data])
     await expect(page.getByRole('heading', { name: /Bom dia, Perfil/ })).toBeVisible()
     await page.getByRole('button', { name: 'Importar para esta conta' }).click()
     await expect(page.locator('.cloud-status')).toContainText('Revisão 2')
@@ -180,5 +182,24 @@ test('migration failure leaves original intact and requires reload', async ({ pa
     await expect(page.getByRole('alert')).toContainText('Nenhum salvamento foi confirmado')
     expect(JSON.parse(await page.evaluate(k=>localStorage.getItem(k)!,localKey))).toEqual(local)
     expect((await database.db.query('select * from public.eu_rico_profiles')).rows).toHaveLength(0)
+  } finally { await database.close() }
+})
+
+test('migration cancels before upload when original backup cannot be written', async ({ page }) => {
+  const database = await cloudDatabase()
+  const localKey = `eu-rico-v1-user-${USER_A}`
+  const local = { name: 'Original', theme: 'light', savingTarget: 0, month: '2026-11', income: [], expenses: [], tasks: [], goals: [] }
+  try {
+    await page.addInitScript(({localKey,local}) => localStorage.setItem(localKey,JSON.stringify(local)), {localKey,local})
+    await open(page, database)
+    await page.evaluate(() => {
+      const originalSet = Storage.prototype.setItem
+      Storage.prototype.setItem = function(key,value) { if(key.startsWith('eu-rico-migration-backup-')) throw new DOMException('Synthetic quota','QuotaExceededError'); return originalSet.call(this,key,value) }
+    })
+    await page.getByLabel('Confirmo que estes registros podem ser importados para minha conta atual.').check()
+    await page.getByRole('button', { name: 'Importar para esta conta' }).click()
+    await expect(page.getByRole('alert')).toContainText('backup do original local')
+    expect((await database.db.query('select * from public.eu_rico_profiles')).rows).toHaveLength(0)
+    expect(JSON.parse(await page.evaluate(key=>localStorage.getItem(key)!,localKey))).toEqual(local)
   } finally { await database.close() }
 })
