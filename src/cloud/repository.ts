@@ -28,6 +28,7 @@ export function createCloudRepository(userId: string, testClient?: RpcClient) {
     }
     const { data, error } = await client.rpc(name, args).abortSignal(AbortSignal.timeout(15000))
     if (error) {
+      if (error.code === 'PT422') throw new Error('Esta versão tentou remover informações de pagamento. Atualize o aplicativo e recarregue antes de salvar. Nenhum dado foi alterado.')
       if (error.code === 'PT409' || error.code === '40001') throw new Error('Outro dispositivo alterou seus dados. Exporte a alteração pendente e recarregue antes de tentar novamente.')
       if (error.code === 'PGRST202' || error.code === '42P01') throw new Error('O banco da nuvem ainda não foi preparado.')
       if (error.code === '42501' || error.code === 'PGRST301') throw new Error('A sessão não permite esta operação. Entre novamente antes de salvar.')

@@ -6,21 +6,24 @@ import { asUser } from '../database.mjs'
 async function navigate(page: Page, name: string) {
   const menu = page.getByRole('button', { name: 'Abrir menu', exact: true })
   if (await menu.isVisible()) await menu.click()
-  await page.locator('nav').getByRole('button', { name: new RegExp(`^${name}(?: [0-9]+)?$`) }).click()
+  await page.locator('nav').getByRole('button', { name: new RegExp('^'+name+'(?: [0-9]+)?$') }).click()
+  if(name==='Dashboard') await revealCharts(page)
 }
+
+async function revealCharts(page:Page) { await page.getByRole('heading',{name:'Evolução financeira',exact:true}).scrollIntoViewIfNeeded() }
 
 test('financial charts: periods, accessible values, seven widths, themes, keyboard and touch', async ({ page }, info) => {
   test.setTimeout(120000)
   const database = await cloudDatabase()
   const date = new Date().toLocaleDateString('sv-SE')
   const previous = new Date(); previous.setDate(1); previous.setMonth(previous.getMonth() - 4)
-  const fixture = { name: 'Gráficos de teste', theme: 'light', savingTarget: 0, month: date.slice(0, 7), tasks: [], goals: [], income: [{ id: 'salary', name: 'Renda', amount: 3500.15, recurrence: 'Mensal', date }], expenses: [{ id: 'current', description: 'Atual', amount: 1250.35, category: 'Categoria com nome muito longo para validar a legenda e a leitura no celular', date, type: 'Fixo' }, { id: 'older', description: 'Anterior', amount: 200, category: 'Outra', date: previous.toLocaleDateString('sv-SE'), type: 'Variável' }] }
+  const fixture = { name: 'Gráficos de teste', theme: 'light', savingTarget: 0, month: date.slice(0, 7), tasks: [], goals: [], income: [{ id: 'salary', name: 'Renda', amount: 3500.15, recurrence: 'Mensal', date }], expenses: [{ id: 'current', description: 'Atual', amount: 1250.35, category: 'Categoria com nome muito longo para validar a legenda e a leitura no celular', date, paymentStatus: 'paid', paidAt: date, type: 'Fixo' }, { id: 'older', description: 'Anterior', amount: 200, category: 'Outra', date: previous.toLocaleDateString('sv-SE'), paymentStatus: 'paid', paidAt: previous.toLocaleDateString('sv-SE'), type: 'Variável' }] }
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   page.on('console', message => { if (message.type() === 'error' || /width.*height.*greater than 0/i.test(message.text())) errors.push(message.text()) })
   try {
     await asUser(database.db, USER_A, 'select public.eu_rico_save($1::jsonb,0,$2::uuid,false)', [JSON.stringify(fixture), crypto.randomUUID()])
-    await database.attach(page); await syntheticSession(page); await page.goto('/')
+    await database.attach(page); await syntheticSession(page); await page.goto('/'); await revealCharts(page)
     await expect(page.getByRole('heading', { name: 'Evolução financeira' })).toBeVisible()
     const charts = page.getByRole('region', { name: 'Gráficos financeiros' })
     await expect(charts.locator('.recharts-surface')).toHaveCount(3)
@@ -57,7 +60,7 @@ test('financial charts: periods, accessible values, seven widths, themes, keyboa
         await charts.scrollIntoViewIfNeeded()
         await page.locator('.toast').waitFor({ state: 'hidden' })
         await page.evaluate(() => { (document.activeElement as HTMLElement)?.blur(); window.scrollTo(0, 0) })
-        await page.screenshot({ path: `diagnostics/charts/${info.project.name}-${theme}-${width}.png`, fullPage: true })
+        await page.screenshot({ path: `${process.env.EU_RICO_TEST_DIAGNOSTICS || 'diagnostics/charts'}/charts/${info.project.name}-${theme}-${width}.png`, fullPage: true })
         if ([390, 1366].includes(width)) await charts.locator('.financial-evolution').screenshot({ path: `diagnostics/charts/evolution-${theme}-${width}.png` })
         const violations = await new AxeBuilder({ page }).include('.financial-charts').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()
         expect(violations.violations.map(v => ({ id: v.id, nodes: v.nodes.map(n => n.target) }))).toEqual([])
@@ -76,7 +79,7 @@ test('financial charts: periods, accessible values, seven widths, themes, keyboa
     await expect(donut.locator('.recharts-tooltip-wrapper')).toContainText('1.250,35')
     await charts.locator('summary').focus(); await page.keyboard.press('Enter')
     await expect(charts.locator('table')).toBeVisible()
-    await page.reload()
+    await page.reload(); await revealCharts(page)
     await expect(charts.locator('.category-legend')).toContainText('1.250,35')
     expect(errors).toEqual([])
   } finally { await database.close() }
@@ -85,25 +88,27 @@ test('financial charts: periods, accessible values, seven widths, themes, keyboa
 test('charts reflect UI expense CRUD and isolated account snapshots', async ({ page }) => {
   const database = await cloudDatabase()
   try {
-    await database.attach(page); await syntheticSession(page); await page.goto('/')
+    await database.attach(page); await syntheticSession(page); await page.goto('/'); await revealCharts(page)
     await expect(page.getByText('Nenhuma despesa neste período.', { exact: true })).toBeVisible()
     await navigate(page, 'Finanças'); await page.getByRole('button', { name: 'Novo gasto', exact: true }).click()
     await page.getByLabel('Descrição', { exact: true }).fill('Gráfico CRUD')
     await page.getByLabel('Valor', { exact: true }).fill('25.30')
     await page.getByRole('button', { name: 'Salvar', exact: true }).click()
     await expect(page.getByRole('dialog')).toHaveCount(0)
+    page.once('dialog', dialog=>dialog.accept())
+    await page.getByRole('button', { name: 'Marcar como paga', exact: true }).click()
     await navigate(page, 'Dashboard')
     await expect(page.locator('.category-legend')).toContainText('25,30')
     await navigate(page, 'Finanças'); await page.getByRole('button', { name: 'Editar despesa Gráfico CRUD', exact: true }).click()
     await page.getByLabel('Valor', { exact: true }).fill('45.50'); await page.getByRole('button', { name: 'Salvar', exact: true }).click()
     await expect(page.getByRole('dialog')).toHaveCount(0)
     await navigate(page, 'Dashboard'); await expect(page.locator('.category-legend')).toContainText('45,50')
-    await page.reload(); await expect(page.locator('.category-legend')).toContainText('45,50')
+    await page.reload(); await revealCharts(page); await expect(page.locator('.category-legend')).toContainText('45,50')
     await navigate(page, 'Finanças'); page.once('dialog', dialog => dialog.accept())
     await page.getByRole('button', { name: 'Excluir despesa Gráfico CRUD', exact: true }).click()
     await navigate(page, 'Dashboard'); await expect(page.getByText('Nenhuma despesa neste período.', { exact: true })).toBeVisible()
     await navigate(page, 'Configurações')
-    const restored = { name: 'Restaurado', theme: 'light', savingTarget: 0, month: new Date().toLocaleDateString('sv-SE').slice(0, 7), tasks: [], goals: [], income: [], expenses: [{ id: 'restore-chart', description: 'Restaurada', amount: 99.90, category: 'Outros', date: new Date().toLocaleDateString('sv-SE'), type: 'Variável' }] }
+    const restored = { name: 'Restaurado', theme: 'light', savingTarget: 0, month: new Date().toLocaleDateString('sv-SE').slice(0, 7), tasks: [], goals: [], income: [], expenses: [{ id: 'restore-chart', description: 'Restaurada', amount: 99.90, category: 'Outros', date: new Date().toLocaleDateString('sv-SE'), paymentStatus: 'paid', paidAt: new Date().toLocaleDateString('sv-SE'), type: 'Variável' }] }
     await page.getByLabel('Selecionar arquivo de backup JSON').setInputFiles({ name: 'charts.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(restored)) })
     await page.getByLabel('Confirmo substituir os dados da minha conta atual por estes registros.').check()
     await page.getByRole('button', { name: 'Confirmar restauração' }).click()
@@ -114,7 +119,7 @@ test('charts reflect UI expense CRUD and isolated account snapshots', async ({ p
       session.access_token = 'synthetic-token-b'; session.user.id = user; session.user.email = 'synthetic-b@example.invalid'
       localStorage.setItem('sb-launch-test-auth-token', JSON.stringify(session))
     }, USER_B)
-    await page.reload()
+    await page.reload(); await revealCharts(page)
     await expect(page.locator('.cloud-status')).toContainText('synthetic-b@example.invalid')
     await expect(page.getByText('Nenhuma despesa neste período.', { exact: true })).toBeVisible()
     await expect(page.locator('.category-legend')).toHaveCount(0)
@@ -126,14 +131,17 @@ test('charts refresh from a second session after confirmed financial writes', as
   const first = await browser.newContext(), second = await browser.newContext()
   try {
     const one = await first.newPage(), two = await second.newPage()
-    for (const page of [one, two]) { await database.attach(page); await syntheticSession(page); await page.goto('/'); await expect(page.getByRole('heading', { name: 'Evolução financeira' })).toBeVisible() }
+    for (const page of [one, two]) { await database.attach(page); await syntheticSession(page); await page.goto('/'); await revealCharts(page); await expect(page.getByRole('heading', { name: 'Evolução financeira' })).toBeVisible() }
     await navigate(one, 'Finanças'); await one.getByRole('button', { name: 'Novo gasto', exact: true }).click()
     await one.getByLabel('Descrição', { exact: true }).fill('Sincronizada')
     await one.getByLabel('Valor', { exact: true }).fill('77.70')
     await one.getByRole('button', { name: 'Salvar', exact: true }).click(); await expect(one.getByRole('dialog')).toHaveCount(0)
+    one.once('dialog',dialog=>dialog.accept())
+    await one.getByRole('button',{name:'Marcar como paga',exact:true}).click()
+    await expect(one.locator('.payment-status')).toContainText('Paga')
     await expect(two.getByText('Nenhuma despesa neste período.', { exact: true })).toBeVisible()
     await two.getByRole('button', { name: 'Recarregar dados da nuvem', exact: true }).click()
     await expect(two.locator('.category-legend')).toContainText('77,70')
-    await two.reload(); await expect(two.locator('.category-legend')).toContainText('77,70')
+    await two.reload(); await revealCharts(two); await expect(two.locator('.category-legend')).toContainText('77,70')
   } finally { await first.close(); await second.close(); await database.close() }
 })

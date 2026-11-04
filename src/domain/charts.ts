@@ -18,7 +18,7 @@ export function financialSeries(data: Pick<Data, 'income' | 'expenses' | 'saving
   // Legacy imports can contain fractions of a cent; never round each record here.
   const amounts = new Map<string, number>()
   for (const expense of data.expenses) {
-    if (!keys.has(expense.date.slice(0, 7))) continue
+    if (expense.paymentStatus !== 'paid' || !expense.paidAt || !keys.has(expense.paidAt.slice(0, 7))) continue
     amounts.set(expense.category, (amounts.get(expense.category) ?? 0) + expense.amount)
   }
   const total = [...amounts.values()].reduce((sum, value) => sum + value, 0)

@@ -38,12 +38,12 @@ export async function cloudDatabase() {
   }
 }
 
-export async function syntheticSession(page: Page, userId = USER_A) {
-  await page.addInitScript(({ userId, token }) => {
+export async function syntheticSession(page: Page, userId = USER_A, lifetimeSeconds = 3600) {
+  await page.addInitScript(({ userId, token, lifetimeSeconds }) => {
     if (!localStorage.getItem('e2e-initialized')) {
       localStorage.setItem('e2e-initialized', 'true')
-      localStorage.setItem('sb-launch-test-auth-token', JSON.stringify({ access_token: token, refresh_token: 'synthetic-refresh', token_type: 'bearer', expires_at: Math.floor(Date.now() / 1000) + 3600,
+      localStorage.setItem('sb-launch-test-auth-token', JSON.stringify({ access_token: token, refresh_token: 'synthetic-refresh', token_type: 'bearer', expires_at: Math.floor(Date.now() / 1000) + lifetimeSeconds,
         user: { id: userId, aud: 'authenticated', role: 'authenticated', email: userId === '11111111-1111-4111-8111-111111111111' ? 'synthetic-a@example.invalid' : 'synthetic-b@example.invalid', app_metadata: {}, user_metadata: {}, created_at: new Date().toISOString() } }))
     }
-  }, { userId, token: userId === USER_B ? 'synthetic-token-b' : 'synthetic-token' })
+  }, { userId, lifetimeSeconds, token: userId === USER_B ? 'synthetic-token-b' : 'synthetic-token' })
 }

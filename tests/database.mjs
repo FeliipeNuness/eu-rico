@@ -3,7 +3,9 @@ import { readFile, mkdir, writeFile } from 'node:fs/promises'
 import assert from 'node:assert/strict'
 import crypto from 'node:crypto'
 
-export async function createTestDatabase({ applyConflictPatch = true } = {}) {
+export const PAYMENT_GUARD_MIGRATION = 'supabase/migrations/20261104023257_expense_payment_guard.sql'
+
+export async function createTestDatabase({ applyConflictPatch = true, applyPaymentGuard = true } = {}) {
   const db = new PGlite()
   await db.exec(`create role anon; create role authenticated;
     create schema auth; create table auth.users(id uuid primary key);
@@ -25,6 +27,8 @@ export async function createTestDatabase({ applyConflictPatch = true } = {}) {
     assert.deepEqual(after.rows[0], expected)
     assert.deepEqual(await catalog(), originalCatalog)
   } catch (error) { await db.close(); throw error }
+  if (applyConflictPatch && applyPaymentGuard) try { await db.exec(await readFile(PAYMENT_GUARD_MIGRATION, 'utf8')) }
+  catch (error) { await db.close(); throw error }
   return db
 }
 
@@ -45,6 +49,44 @@ export async function runDatabaseChecks() {
   const save = (uid, payload, revision, op = crypto.randomUUID(), preserve = false) => asUser(db, uid, 'select public.eu_rico_save($1::jsonb,$2,$3::uuid,$4) result', [JSON.stringify(payload), revision, op, preserve])
   const read = async uid => (await asUser(db, uid, 'select public.eu_rico_read() result')).rows[0].result
   try {
+    await check('payment guard preserves legacy data, blocks outdated edits, validates fields and rolls back without data loss', async () => {
+      const isolated = await createTestDatabase({ applyPaymentGuard: false })
+      const bill = { id: 'payment-test', description: 'Internet', amount: 100, category: 'Internet', date: '2026-11-03', type: 'Fixo' }
+      const original = { ...data, expenses: [bill] }
+      const write = (document, revision, preserve = false) => asUser(isolated, A, 'select public.eu_rico_save($1::jsonb,$2,$3::uuid,$4)', [JSON.stringify(document), revision, crypto.randomUUID(), preserve])
+      const snapshot = () => asUser(isolated, A, 'select public.eu_rico_read() result')
+      const functions = () => isolated.query("select oid, proowner, proacl, prosecdef, proconfig, pg_get_functiondef(oid) definition from pg_proc where oid in ('public.eu_rico_valid_record(text,jsonb)'::regprocedure,'eu_rico_private.eu_rico_save(jsonb,bigint,uuid,boolean)'::regprocedure) order by oid")
+      try {
+        await isolated.query('insert into auth.users values($1)', [A])
+        await write(original, 0)
+        const before = await snapshot(), previousFunctions = await functions()
+        const patch = await readFile(PAYMENT_GUARD_MIGRATION, 'utf8')
+        await isolated.exec(patch)
+        assert.deepEqual(await snapshot(), before)
+        const protectedFunctions = await functions()
+        assert.deepEqual(protectedFunctions.rows.map(({definition,...metadata}) => { void definition; return metadata }), previousFunctions.rows.map(({definition,...metadata}) => { void definition; return metadata }))
+        const paid = { ...original, expenses: [{ ...bill, paymentStatus: 'paid', paidAt: '2026-11-03', recurrence: 'Mensal' }] }
+        await write(paid, 1)
+        const confirmed = await snapshot()
+        await assert.rejects(write(original, 2), error => error.code === 'PT422')
+        assert.deepEqual(await snapshot(), confirmed)
+        for (const invalid of [{ ...bill, paymentStatus: 'paid' }, { ...bill, paymentStatus: 'paid', paidAt: '2026-02-31' }, { ...bill, paymentStatus: 'pending', paidAt: '2026-11-03' }, { ...bill, paymentStatus: 'other' }, { ...bill, recurrenceDay: 1.5 }]) {
+          await assert.rejects(write({ ...original, expenses: [invalid] }, 2), /EU_RICO_INVALID_RECORD/)
+          assert.deepEqual(await snapshot(), confirmed)
+        }
+        await write({ ...original, expenses: [{ ...bill, paymentStatus: 'pending' }] }, 2)
+        await write(original, 3, true)
+        assert.deepEqual((await snapshot()).rows[0].result.data, original)
+        const restored = await snapshot()
+        await isolated.exec(await readFile('supabase/rollback-expense-payment-guard.sql', 'utf8'))
+        assert.deepEqual(await snapshot(), restored)
+        assert.deepEqual(await functions(), previousFunctions)
+        await isolated.exec(patch)
+        await assert.rejects(isolated.exec(patch), /EU_RICO_PAYMENT_GUARD_PRECONDITION_FAILED/)
+        await isolated.exec('rollback')
+        assert.deepEqual(await snapshot(), restored)
+      } finally { await isolated.close() }
+    })
     await check('incremental conflict patch preserves populated snapshots and fails closed on repeat', async () => {
       const legacy = await createTestDatabase({ applyConflictPatch: false })
       try {
@@ -150,9 +192,10 @@ export async function runDatabaseChecks() {
       await assert.rejects(asUser(db,A,'select eu_rico_private.eu_rico_save($1::jsonb,5,$2::uuid,false)',[JSON.stringify(data),crypto.randomUUID()]),/permission denied/)
       assert.equal((await read(A)).data.name, 'Synthetic')
     })
-    await mkdir('diagnostics/supabase-staging', { recursive: true })
+    const output = process.env.EU_RICO_TEST_DIAGNOSTICS || 'diagnostics/supabase-staging'
+    await mkdir(output, { recursive: true })
     const engine = (await db.query('select version() as engine')).rows[0].engine
-    await writeFile('diagnostics/supabase-staging/database-results.json', JSON.stringify({ scope: 'Real embedded PostgreSQL, synthetic auth claims/roles; not remote Supabase or real Google', engine, passed: count, failed: 0 }, null, 2) + '\n')
+    await writeFile(`${output}/database-results.json`, JSON.stringify({ scope: 'Real embedded PostgreSQL, synthetic auth claims/roles; not remote Supabase or real Google', engine, passed: count, failed: 0 }, null, 2) + '\n')
   } finally { await db.close() }
 }
 if (process.argv[1]?.endsWith('database.mjs')) await runDatabaseChecks().catch(error => { console.error(error.message, error.code ?? ''); process.exitCode = 1 })

@@ -7,22 +7,38 @@ export const roundMoney = (value: number) => {
 }
 export const money = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(roundMoney(value))
 
-export function getMonthlyTotals(data: Pick<Data, 'income' | 'expenses' | 'savingTarget'>, monthKey: string) {
-  const monthlyIncome = data.income.filter(item => item.recurrence === 'Mensal' || !item.date || item.date.startsWith(monthKey))
+// Integer micro-units preserve legacy fractions of a cent until the final aggregate.
+export function sumMoney(items: { amount: number }[]) {
+  const units = items.reduce((sum, item) => {
+    const decimal = String(item.amount)
+    const [whole, fraction = ''] = (decimal.includes('e') ? item.amount.toFixed(6) : decimal).split('.')
+    return sum + BigInt(whole) * 1000000n + BigInt(fraction.padEnd(6, '0').slice(0, 6))
+  }, 0n)
+  return Number((units + 5000n) / 10000n) / 100
+}
+
+export function getMonthlyTotals(data: Pick<Data, 'income' | 'expenses' | 'savingTarget'>, monthKey: string, localDate = new Date().toLocaleDateString('sv-SE')) {
+  const monthlyIncome = data.income.filter(item => !!item.date && item.date.startsWith(monthKey) && item.date <= localDate)
   const monthExpenses = data.expenses.filter(item => item.date.startsWith(monthKey))
-  const income = roundMoney(monthlyIncome.reduce((sum, item) => sum + item.amount, 0))
-  const expenses = roundMoney(monthExpenses.reduce((sum, item) => sum + item.amount, 0))
+  const income = sumMoney(monthlyIncome)
+  const paidExpenses = data.expenses.filter(item => item.paymentStatus === 'paid' && item.paidAt?.startsWith(monthKey))
+  const pendingExpenses = monthExpenses.filter(item => item.paymentStatus === 'pending')
+  const unknownExpenses = monthExpenses.filter(item => !item.paymentStatus)
+  const pending = sumMoney(pendingExpenses)
+  const unknown = sumMoney(unknownExpenses)
+  const expenses = sumMoney(paidExpenses)
   const netBalance = roundMoney(income - expenses)
   const savingTarget = roundMoney(Math.max(0, data.savingTarget))
   const spendingLimit = roundMoney(Math.max(0, income - savingTarget))
   const availableToSpend = roundMoney(spendingLimit - expenses)
   const spendingPercent = spendingLimit > 0 ? Math.min(100, Math.max(0, expenses / spendingLimit * 100)) : null
   return {
-    income, incomeCount: monthlyIncome.length, expenses, netBalance,
+    income, incomeCount: monthlyIncome.length, expenses, netBalance, pending, unknown, pendingExpenses, unknownExpenses, paidExpenses,
+    projectedBalance: roundMoney(netBalance - pending), committed: pending,
     realizedSavings: Math.max(0, netBalance), savingTarget, spendingLimit, availableToSpend, spendingPercent,
-    fixedExpenses: roundMoney(monthExpenses.filter(item => item.type === 'Fixo').reduce((sum, item) => sum + item.amount, 0)),
-    variableExpenses: roundMoney(monthExpenses.filter(item => item.type === 'Variável').reduce((sum, item) => sum + item.amount, 0)),
-    monthExpenses,
+    fixedExpenses: sumMoney(paidExpenses.filter(item => item.type === 'Fixo')),
+    variableExpenses: sumMoney(paidExpenses.filter(item => item.type === 'Variável')),
+    monthExpenses: data.expenses.filter(item => item.date.startsWith(monthKey) || item.paidAt?.startsWith(monthKey)),
   }
 }
 

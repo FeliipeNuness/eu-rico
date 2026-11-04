@@ -22,7 +22,7 @@ async function authenticated(page: Page) {
   await syntheticSession(page)
   page.on('dialog', dialog => dialog.accept())
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: /Bom dia/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Bom dia|Boa tarde|Boa noite/ })).toBeVisible()
 }
 
 test('public pages, protected access and OAuth cancellation', async ({ page }) => {
@@ -89,6 +89,8 @@ test('income and expenses CRUD, totals, validation and period', async ({ page })
   await expect(page.getByRole('dialog')).toBeVisible()
   await page.getByLabel('Valor', { exact: true }).fill('200')
   await page.getByRole('button', { name: 'Salvar', exact: true }).click()
+  await expect(page.locator('.summary-block').nth(2)).toContainText('1.000,00')
+  await page.getByRole('button', { name: 'Marcar como paga', exact: true }).click()
   await expect(page.locator('.summary-block').nth(2)).toContainText('800,00')
   await page.getByRole('button', { name: 'Editar renda Salário sintético' }).click()
   await page.getByLabel('Valor', { exact: true }).fill('1200')
@@ -179,7 +181,7 @@ test('layout, essential accessible names and persistent storage failure', async 
     const unnamed = await page.locator('button').evaluateAll(buttons => buttons.filter(b => !b.textContent?.trim() && !b.getAttribute('aria-label') && !b.getAttribute('title')).length)
     expect(unnamed).toBe(0)
   }
-  await page.screenshot({ path: `diagnostics/supabase-staging/${testInfo.project.name}-dashboard.png`, fullPage: true })
+  await page.screenshot({ path: `${process.env.EU_RICO_TEST_DIAGNOSTICS || 'diagnostics/supabase-staging'}/${testInfo.project.name}-dashboard.png`, fullPage: true })
   await page.evaluate(k => localStorage.setItem(k, '{broken'), key)
   await page.reload()
   await expect(page.getByRole('alert')).toContainText('Registros inválidos preservados')

@@ -14,7 +14,7 @@ test('premium visual matrix with populated synthetic data and preserved controls
   test.setTimeout(180000)
   const database = await cloudDatabase()
   const phase = process.env.PREMIUM_CAPTURE_PHASE || 'after'
-  const dir = `diagnostics/ui-premium/${phase}`
+  const dir = `${process.env.EU_RICO_TEST_DIAGNOSTICS || 'diagnostics/ui-premium'}/premium/${phase}`
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   page.on('console', message => { if (message.type() === 'error') errors.push(message.text()) })

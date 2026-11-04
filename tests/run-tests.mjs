@@ -6,7 +6,7 @@ import ts from 'typescript'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const temp = resolve(root, 'node_modules/.tmp/eu-rico-tests')
-const modules = ['model', 'charts', 'finance', 'storage', 'backup', 'tasks', 'collections', 'migration']
+const modules = ['greeting', 'payments', 'model', 'charts', 'finance', 'storage', 'backup', 'tasks', 'collections', 'migration']
 await mkdir(resolve(temp, 'domain'), { recursive: true })
 for (const name of modules) {
   const source = await readFile(resolve(root, `src/domain/${name}.ts`), 'utf8')

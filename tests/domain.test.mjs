@@ -1,6 +1,8 @@
 import { backupMigrationSource } from '../src/domain/storage.ts'
 import { stagingTargetError, PROTECTED_PROJECT_REF } from '../src/auth/environment.ts'
 import { canonical, localCandidates, mergeLocalData } from '../src/domain/migration.ts'
+import { greeting, firstName } from '../src/domain/greeting.ts'
+import { expenseStatus, setExpensePayment, nextExpense } from '../src/domain/payments.ts'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { getMonthlyTotals, goalMonthlyContribution, goalProgress, roundMoney } from '../src/domain/finance.ts'
@@ -14,11 +16,75 @@ import { validateSupabaseConfig } from '../src/auth/config.ts'
 import { oauthRedirectError } from '../src/auth/oauthErrors.ts'
 import { financialSeries } from '../src/domain/charts.ts'
 
+test('local greeting boundaries and authenticated first name fallback', () => {
+  for (const [hour, expected] of [[0,'Boa noite'],[4,'Boa noite'],[5,'Bom dia'],[11,'Bom dia'],[12,'Boa tarde'],[17,'Boa tarde'],[18,'Boa noite'],[23,'Boa noite']]) assert.equal(greeting(hour),expected)
+  assert.equal(firstName('', { full_name: '  Ana   Silva ' }), 'Ana')
+  assert.equal(firstName(' Pedro Costa ', { full_name: 'Ana Silva' }), 'Pedro')
+  assert.equal(firstName('', { full_name: 123 }), '')
+})
+
+test('payments, retries, edits, deletion, overdue and cross-month cash flow', () => {
+  const bill = { ...expense('internet',100,'2026-02-10'), paymentStatus: 'pending', paidAt: undefined }
+  const salary = income('salary',2000,'Única','2026-02-02')
+  const gym = expense('gym',90,'2026-02-02')
+  const data = { ...initialData, income:[salary], expenses:[bill,gym] }
+  const total = expenses => getMonthlyTotals({...data,expenses},'2026-02','2026-02-15')
+  assert.equal(total(data.expenses).netBalance,1910)
+  assert.equal(total(data.expenses).pending,100)
+  assert.equal(total(data.expenses).projectedBalance,1810)
+  assert.equal(expenseStatus(bill,'2026-02-09'),'Pendente')
+  assert.equal(expenseStatus(bill,'2026-02-10'),'Pendente')
+  assert.equal(expenseStatus(bill,'2026-02-11'),'Atrasada')
+  const paid = setExpensePayment(bill,true,'2026-02-15')
+  assert.equal(total([paid,gym]).netBalance,1810)
+  assert.equal(total([paid,gym]).pending,0)
+  assert.equal(setExpensePayment(paid,true,'2026-02-16'),paid)
+  assert.equal(total([setExpensePayment(paid,false,'2026-02-15'),gym]).netBalance,1910)
+  const undone = upsertById([paid],setExpensePayment(paid,false,'2026-02-15'))
+  assert.equal(undone[0].paidAt,undefined)
+  assert.ok(parseBackup({...data,expenses:undone}))
+  assert.equal(total([{...bill,amount:200},gym]).netBalance,1910)
+  assert.equal(total([{...paid,amount:200},gym]).netBalance,1710)
+  assert.equal(total([gym]).netBalance,1910)
+  assert.equal(total([]).netBalance,2000)
+  const march = setExpensePayment(bill,true,'2026-03-01')
+  assert.equal(total([march,gym]).expenses,90)
+  assert.equal(getMonthlyTotals({...data,expenses:[march]},'2026-03').expenses,100)
+  assert.equal(getMonthlyTotals({...data,expenses:[march]},'2026-03').monthExpenses.length,1)
+  assert.equal(bill.paymentStatus,'pending')
+})
+
+test('legacy records remain unknown and backups preserve payment dates and recurrence', () => {
+  const { paymentStatus, paidAt, ...legacy } = expense('legacy',100,'2026-02-10')
+  void paymentStatus; void paidAt
+  const data = {...initialData,expenses:[legacy]}
+  assert.equal(expenseStatus(legacy,'2026-02-20'),'A revisar')
+  assert.equal(getMonthlyTotals(data,'2026-02').expenses,0)
+  assert.equal(getMonthlyTotals(data,'2026-02').unknown,100)
+  assert.equal(getMonthlyTotals(data,'2026-02').committed,0)
+  assert.deepEqual(parseBackup(createBackup(data)).data.expenses,[legacy])
+  const next = nextExpense({...legacy,recurrence:'Mensal',date:'2026-01-31'})
+  assert.equal(next.date,'2026-02-28')
+  assert.equal(next.paymentStatus,'pending')
+  assert.equal(nextExpense(next).date,'2026-03-31')
+  assert.deepEqual(nextExpense({...legacy,recurrence:'Mensal',date:'2026-01-31'}),next)
+  const paid = setExpensePayment(next,true,'2026-03-01')
+  assert.deepEqual(parseBackup(JSON.parse(JSON.stringify(createBackup({...data,expenses:[paid]})))).data.expenses,[paid])
+  assert.equal(validateData({...data,expenses:[{...paid,paidAt:'2026-02-31'}]}).expenses.length,0)
+  assert.equal(parseBackup({...data,expenses:[{...paid,paidAt:'2026-02-31'}]}),null)
+})
+
+test('income is received once by local date; future and undated entries are excluded', () => {
+  const data = {...initialData,income:[income('a',0.1,'Mensal','2026-02-01'),income('b',0.2,'Única','2026-02-01'),income('future',100,'Única','2026-02-20'),income('unknown',100,'Mensal')]}
+  assert.equal(getMonthlyTotals(data,'2026-02','2026-02-10').income,0.3)
+  assert.equal(getMonthlyTotals(data,'2026-03','2026-03-10').income,0)
+})
+
 test('charts preserve monthly conventions, chronology, gaps, period and monthly net', () => {
-  const data = { ...initialData, income: [{ id: 'salary', name: 'Salary', amount: 100, recurrence: 'Mensal' }, { id: 'bonus', name: 'Bonus', amount: 50, recurrence: 'Única', date: '2026-01-01' }], expenses: [{ id: 'e', description: 'e', amount: 110, category: 'Casa', date: '2026-02-01', type: 'Fixo' }] }
+  const data = { ...initialData, income: [{ id: 'salary', name: 'Salary', amount: 100, recurrence: 'Mensal', date: '2026-02-01' }, { id: 'bonus', name: 'Bonus', amount: 50, recurrence: 'Única', date: '2026-01-01' }], expenses: [{ id: 'e', description: 'e', amount: 110, category: 'Casa', date: '2026-02-01', type: 'Fixo', paymentStatus: 'paid', paidAt: '2026-02-01' }] }
   const series = financialSeries(data, '2026-02', 3)
   assert.deepEqual(series.months.map(m => m.key), ['2025-12', '2026-01', '2026-02'])
-  assert.deepEqual(series.months.map(m => [m.income, m.expenses, m.netBalance]), [[100, 0, 100], [150, 0, 150], [100, 110, -10]])
+  assert.deepEqual(series.months.map(m => [m.income, m.expenses, m.netBalance]), [[0, 0, 0], [50, 0, 50], [100, 110, -10]])
   assert.equal(financialSeries(data, '2026-02', 12).months.length, 12)
   assert.equal(financialSeries(data, '2026-02', 6).months[0].key, '2025-09')
   assert.deepEqual(financialSeries(initialData, '2026-02', 3).months.map(m => m.netBalance), [0, 0, 0])
@@ -53,12 +119,12 @@ test('charts immediately project CRUD, restored/imported snapshots and account r
   assert.equal(financialSeries(initialData, '2026-02', 3).totalExpenses, 0)
 })
 
-const expense = (id, amount, date, type = 'Variável') => ({ id, description: id, amount, category: 'Casa', date, type })
+const expense = (id, amount, date, type = 'Variável') => ({ id, description: id, amount, category: 'Casa', date, type, paymentStatus: 'paid', paidAt: date })
 const income = (id, amount, recurrence, date) => ({ id, name: id, amount, recurrence, date })
 
 test('month totals use the selected competence and recurring/one-off income rules', () => {
   const data = { ...initialData, savingTarget: 400,
-    income: [income('salary', 3000, 'Mensal', '2026-01-05'), income('bonus-current', 500, 'Única', '2026-02-12'), income('bonus-old', 700, 'Única', '2026-01-10')],
+    income: [income('salary', 3000, 'Mensal', '2026-02-05'), income('bonus-current', 500, 'Única', '2026-02-12'), income('bonus-old', 700, 'Única', '2026-01-10')],
     expenses: [expense('current', 120, '2026-02-01', 'Fixo'), expense('old', 900, '2026-01-31')] }
   const february = getMonthlyTotals(data, '2026-02')
   assert.equal(february.income, 3500)
@@ -69,11 +135,11 @@ test('month totals use the selected competence and recurring/one-off income rule
   assert.equal(february.netBalance, 3380)
   assert.equal(february.spendingLimit, 3100)
   assert.equal(february.availableToSpend, 2980)
-  assert.equal(getMonthlyTotals(data, '2026-01').income, 3700)
+  assert.equal(getMonthlyTotals(data, '2026-01').income, 700)
 })
 
 test('zero budget never produces a bogus percentage and preserves a negative available amount', () => {
-  const totals = getMonthlyTotals({ ...initialData, savingTarget: 1000, income: [income('monthly', 1000, 'Mensal', '2026-01-01')], expenses: [expense('spent', 50, '2026-02-01')] }, '2026-02')
+  const totals = getMonthlyTotals({ ...initialData, savingTarget: 1000, income: [income('monthly', 1000, 'Mensal', '2026-02-01')], expenses: [expense('spent', 50, '2026-02-01')] }, '2026-02')
   assert.equal(totals.spendingLimit, 0)
   assert.equal(totals.spendingPercent, null)
   assert.equal(totals.availableToSpend, -50)
@@ -246,7 +312,7 @@ test('migration archives the exact original before upload and cancels on quota o
 })
 import { createCloudRepository } from '../src/cloud/repository.ts'
 
-for (const code of ['PT409', '40001']) {
+for (const code of ['PT409', '40001', 'PT422']) {
   test(`cloud conflict ${code} preserves draft and rejects once without retry`, async () => {
     const draft = { name: 'Draft', tasks: [] }
     const original = structuredClone(draft)
@@ -260,7 +326,7 @@ for (const code of ['PT409', '40001']) {
         return { abortSignal: async () => ({ data: null, error: { code, message: 'EU_RICO_CONFLICT' } }) }
       },
     })
-    await assert.rejects(repository.save(draft, 7), /Outro dispositivo alterou seus dados.*Exporte.*recarregue/)
+    await assert.rejects(repository.save(draft, 7), code === 'PT422' ? /remover informações de pagamento.*Atualize.*Nenhum dado/ : /Outro dispositivo alterou seus dados.*Exporte.*recarregue/)
     assert.equal(calls, 1)
     assert.deepEqual(draft, original)
   })

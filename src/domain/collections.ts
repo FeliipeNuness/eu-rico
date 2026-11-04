@@ -11,5 +11,5 @@ export function removeById<T extends Identified>(items: T[], id: string) {
 export type IncomeEntry = { id: string; name: string; amount: number; recurrence: 'Mensal' | 'Única'; date?: string }
 export function duplicatesIncome(items: IncomeEntry[], incoming: Omit<IncomeEntry, 'id'>, editingId?: string) {
   const normalizedName = incoming.name.trim().toLocaleLowerCase('pt-BR')
-  return items.some(item => item.id !== editingId && item.name.trim().toLocaleLowerCase('pt-BR') === normalizedName && item.amount === incoming.amount && item.recurrence === incoming.recurrence && (incoming.recurrence === 'Mensal' || item.date === incoming.date))
+  return items.some(item => item.id !== editingId && item.name.trim().toLocaleLowerCase('pt-BR') === normalizedName && item.amount === incoming.amount && item.recurrence === incoming.recurrence && item.date === incoming.date)
 }

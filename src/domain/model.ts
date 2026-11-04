@@ -1,6 +1,6 @@
 export type Task = { id: string; title: string; description: string; date: string; time: string; priority: 'Baixa' | 'Média' | 'Alta'; category: string; done: boolean; completedAt?: string }
 export type Income = { id: string; name: string; amount: number; recurrence: 'Mensal' | 'Única'; date?: string }
-export type Expense = { id: string; description: string; amount: number; category: string; date: string; type: 'Fixo' | 'Variável'; note?: string }
+export type Expense = { id: string; description: string; amount: number; category: string; date: string; type: 'Fixo' | 'Variável'; note?: string; paymentStatus?: 'pending' | 'paid'; paidAt?: string; recurrence?: 'Única' | 'Mensal'; seriesId?: string; recurrenceDay?: number }
 export type Goal = { id: string; name: string; description: string; target: number; saved: number; deadline: string; category: string; priority: string }
 export type Data = { name: string; theme: 'light' | 'dark'; income: Income[]; expenses: Expense[]; tasks: Task[]; goals: Goal[]; savingTarget: number; month: string; [key: string]: unknown }
 
@@ -37,7 +37,7 @@ export function validateData(input: unknown): Data | null {
   const expenses = (source.expenses as unknown[] | undefined ?? []).filter((v): v is Expense => {
     if (!v || typeof v !== 'object') return false
     const x = v as Record<string, unknown>
-    return validId(x.id) && validText(x.description, 300) && !!x.description.trim() && finiteNonNegative(x.amount) && x.amount > 0 && validText(x.category, 100) && !!x.category.trim() && isDate(x.date) && (x.type === 'Fixo' || x.type === 'Variável') && (x.note === undefined || validText(x.note, 1000))
+    return validId(x.id) && validText(x.description, 300) && !!x.description.trim() && finiteNonNegative(x.amount) && x.amount > 0 && validText(x.category, 100) && !!x.category.trim() && isDate(x.date) && (x.type === 'Fixo' || x.type === 'Variável') && (x.note === undefined || validText(x.note, 1000)) && (x.paymentStatus === undefined || x.paymentStatus === 'pending' || x.paymentStatus === 'paid') && (x.paymentStatus === 'paid' ? isDate(x.paidAt) : x.paidAt === undefined) && (x.recurrence === undefined || x.recurrence === 'Única' || x.recurrence === 'Mensal') && (x.seriesId === undefined || validId(x.seriesId)) && (x.recurrenceDay === undefined || (Number.isInteger(x.recurrenceDay) && Number(x.recurrenceDay) >= 1 && Number(x.recurrenceDay) <= 31))
   })
   const tasks = (source.tasks as unknown[] | undefined ?? []).filter((v): v is Task => {
     if (!v || typeof v !== 'object') return false

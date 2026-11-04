@@ -31,6 +31,22 @@ Esta versão utiliza PostgreSQL do Supabase para tarefas, receitas, despesas, me
 - Tema claro e escuro.
 - Exportação e restauração de backups JSON.
 
+## Contas e pagamentos
+
+Despesas novas começam pendentes. O vencimento organiza as contas, mas não movimenta o saldo. Ao pagar, informe a data efetiva e confirme **Marcar como paga**. O saldo do mês desconta somente pagamentos confirmados naquele mês. **Desfazer pagamento** devolve a conta para pendente; editar ou excluir um pagamento recalcula os indicadores a partir dos registros, sem lançar um segundo débito.
+
+Contas pendentes vencidas aparecem como atrasadas. O saldo projetado desconta as pendências com vencimento no período. A meta de economia reserva orçamento, mas não é uma despesa paga. Os saldos apresentados são mensais, sem transporte automático de meses anteriores.
+
+Despesas antigas sem informação de pagamento aparecem como **A revisar**. Seus dados originais permanecem intactos. Esses valores ficam separados e tornam o saldo parcial até o usuário confirmar pagamento ou pendência. Para pagamentos antigos, informe a data real; não confirme todos como pagos por conveniência.
+
+Receitas entram no mês de sua data de recebimento, até a data local atual. A classificação mensal identifica recorrência, mas não cria dinheiro recebido em outros meses: registre cada recebimento. Receitas sem data permanecem disponíveis para revisão e ficam fora do saldo. Revise as antigas datas de referência das receitas mensais antes de confiar nos indicadores.
+
+A recorrência mensal de despesas oferece **Gerar próximo mês**, com proteção contra parcela duplicada. Cada parcela começa pendente. Vencimentos no dia 31 usam o último dia de meses menores e retomam o dia original no mês seguinte. Não há débito ou geração automática em segundo plano.
+
+Os campos opcionais são preservados no payload JSON e nos backups existentes. Nenhuma atualização automática de registros legados é executada. Uma migration incremental de validação e proteção contra perda dos campos está preparada e testada localmente, sem aplicação remota. Consulte [PAYMENT_GUARD.md](./supabase/PAYMENT_GUARD.md) e [RELATORIO_ATUALIZACAO_EU_RICO.md](./RELATORIO_ATUALIZACAO_EU_RICO.md) antes do lançamento e de qualquer rollback.
+
+Para repetir a validação isolada desta atualização, execute `npx playwright test --config playwright.update.config.ts`. Os resultados ficam em `diagnostics/update/`, com sessões fictícias e PostgreSQL descartável. O teste não autentica contas Google reais.
+
 Registros locais anteriores são detectados somente para a conta atual e para a chave legada sem conta. A importação exige prévia e confirmação; originais não são apagados. Repetir a importação preserva IDs e não duplica registros; conflito de ID cancela o processo. A restauração de backup substitui a conta na nuvem e cria cópia privada anterior na mesma transação. Cópias locais de recuperação podem conter registros legíveis: proteja o dispositivo e os arquivos exportados. Limpar o navegador pode perder dados não importados ou alterações não confirmadas, mas não apaga gravações já confirmadas na nuvem.
 
 ## Preparação para lançamento

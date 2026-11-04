@@ -9,3 +9,5 @@ import './redesign.css'
 import './palette.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><AuthProvider><App /></AuthProvider></React.StrictMode>)
+
+import './update.css'
