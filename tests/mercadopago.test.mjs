@@ -233,3 +233,19 @@ test('partial refund records the returned amount without revoking the paid month
   payment.transaction_amount_refunded=29.99;payment.date_last_updated=new Date(Date.now()+2000).toISOString();await f.sync()
   assert.equal((await f.status()).allowed,false)
 })
+
+test('worker skips only repeated periodic reads, processes each notification and refreshes next run',async t=>{
+  const f=await fixture(t);await f.checkout();await f.activate();const payment=f.charge()
+  for(const key of ['first','second'])await f.admin('mp_ingest',{key,environment:'local',event:'subscription_preapproval',resourceId:'sub-1'})
+  const calls={subscription:0,invoices:0,payment:0}
+  for(const name of Object.keys(calls)){const original=f.provider[name];f.provider[name]=async(...args)=>{calls[name]++;return original(...args)}}
+  const worker=createHandler('mercadopago-reconcile',f.deps)
+  const run=()=>worker(new Request('https://local.invalid',{method:'POST',headers:{Authorization:'Bearer synthetic-worker'}}))
+  assert.equal((await run()).status,200)
+  assert.deepEqual(calls,{subscription:4,invoices:2,payment:2})
+  assert.equal((await f.status()).allowed,true)
+  payment.status='refunded';payment.date_last_updated=new Date(Date.now()+1000).toISOString()
+  assert.equal((await run()).status,200)
+  assert.deepEqual(calls,{subscription:5,invoices:3,payment:3})
+  assert.equal((await f.status()).allowed,false)
+})

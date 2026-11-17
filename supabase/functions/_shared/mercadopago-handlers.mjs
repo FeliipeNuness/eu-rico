@@ -60,6 +60,7 @@ export function createMPHandler(kind,deps,{ json,boundedBody }) {
       const settings = await deps.admin('config',{})
       if (settings.environment!==config.billingEnvironment) throw new BillingError('ENVIRONMENT_MISMATCH')
       let processed=0,failed=0
+      const reconciled = new Set()
       for (let index=0;index<10;index++) {
         const event = await deps.admin('mp_claim',{})
         if (!event) break
@@ -80,6 +81,7 @@ export function createMPHandler(kind,deps,{ json,boundedBody }) {
           if (sub.id!==id) throw new BillingError('MP_RESOURCE_MISMATCH')
           await deps.admin('mp_created',{intentId:sub.external_reference,subscriptionId:id,url:sub.init_point?mpCheckoutUrl(sub.init_point,id):null})
           await reconcileMP(provider,deps.admin,config,id)
+          reconciled.add(id)
           await deps.admin('mp_done',event);processed++
         } catch { await deps.admin('mp_retry',event);failed++ }
       }
@@ -96,12 +98,15 @@ export function createMPHandler(kind,deps,{ json,boundedBody }) {
           const sub=validateMPSubscription(subscription,config,intent.id)
           await deps.admin('mp_created',{intentId:intent.id,subscriptionId:sub.id,url:sub.init_point?mpCheckoutUrl(sub.init_point,sub.id):null})
           await reconcileMP(provider,deps.admin,config,sub.id);processed++
+          reconciled.add(sub.id)
         } catch { failed++ }
       }
       const subscriptions=await deps.admin('mp_subscriptions',{})
       const offset=subscriptions.length ? Math.floor(Date.now()/60000)*5%subscriptions.length : 0
       for (let index=0;index<Math.min(5,subscriptions.length);index++) {
         const id = subscriptions[(offset+index)%subscriptions.length].provider_id
+        // Queued events are always read; only skip the redundant periodic backup in this run.
+        if (reconciled.has(id)) continue
         try { await reconcileMP(provider,deps.admin,config,id);processed++ }
         catch { failed++ }
       }
