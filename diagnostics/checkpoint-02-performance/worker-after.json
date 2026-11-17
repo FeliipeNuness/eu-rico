@@ -1,0 +1,11 @@
+{
+  "phase": "after",
+  "scope": "One approved event, one known subscription; mocked API calls and disposable SQL; not production latency",
+  "calls": {
+    "subscription": 2,
+    "invoices": 1,
+    "payment": 1
+  },
+  "totalReads": 4,
+  "premiumConfirmed": true
+}

@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
@@ -62,7 +63,7 @@ test('checkout checks contract version and new price, cancellation checks reconc
   assert.deepEqual(await (await handler(request({ action: 'cancel', subscriptionId: id }))).json(), { canceled: true, cancellationStatus: 'confirmed' })
 })
 
-test('site distribution contains the exact canonical commercial configuration', async () => {
+test('site distribution contains the exact canonical commercial configuration', { skip: !existsSync('../eu-rico-site/src/commercial.json') && 'Separate site checkout not present' }, async () => {
   assert.deepEqual(JSON.parse(await readFile('../eu-rico-site/src/commercial.json', 'utf8')), commercial)
 })
 

@@ -1,6 +1,14 @@
 # Publicação do Eu Rico
 
-## Estado em 02/11/2026
+## Preparação Mercado Pago — 17/11/2026
+
+O estado vigente da integração multiprovedor e suas dependências estão em [MERCADO-PAGO-CHECKPOINT-01.md](./MERCADO-PAGO-CHECKPOINT-01.md). Novas assinaturas Mercado Pago dependem de homologação e ativação autorizadas; Cakto continua para contratos antigos. Não executar instruções históricas de configuração Cakto como procedimento de novas vendas. Esta preparação não autoriza SQL remoto, publicação ou cobrança.
+
+## Atualização com clientes ativos — 16/11/2026
+
+O procedimento atual é [CLIENTES-ATIVOS-IMPLANTACAO.md](./docs/CLIENTES-ATIVOS-IMPLANTACAO.md), com [plano de preservação](./docs/CLIENTES-ATIVOS-PLANO.md) e [resultados locais](./docs/CLIENTES-ATIVOS-RESULTADO.md). Nenhum texto histórico abaixo autoriza acesso remoto ou deploy. O backup remoto restaurável, o estado real das migrations e a homologação da oferta mensal de R$ 29,99 continuam pendentes. Staging antigo não pode ser reutilizado para contornar o guard. A proteção de produção, contratos anteriores e dados dos clientes devem ser preservados.
+
+## Estado histórico em 02/11/2026 (não é autorização atual)
 
 As duas migrations aprovadas foram aplicadas no principal oauygidvpsfznxevpfnj após backup restaurado em laboratório e novo preflight. Seis tabelas com RLS, 24 policies, 11 índices, seis FKs e funções/grants foram verificados. O patch altera somente o SQLSTATE de conflito para PT409. Os 33 testes remotos com contas exclusivas passaram; usuários Google originais preservados. Não reaplicar migrations nem copiar dados do staging.
 
@@ -11,7 +19,7 @@ Publicação autorizada na equipe Felipe Nunes' projects, Hobby, para uso pessoa
 - Repositório: https://github.com/FeliipeNuness/eu-rico, branch main, raiz do projeto.
 - Framework Vite; Node 24.x; instalação npm ci; build npm run build; saída dist.
 - Production: VITE_SUPABASE_URL do principal e sua VITE_SUPABASE_PUBLISHABLE_KEY pública. Nunca cadastrar service_role, secret, senha PostgreSQL ou Google client secret no frontend.
-- Preview: usar somente staging mbksdigxfhsnxocsjicp e sua chave pública, VITE_APP_ENV=staging e VITE_STAGING_PROJECT_REF=mbksdigxfhsnxocsjicp. Não herdar o banco principal em previews.
+- Preview: o guard atual exige exclusivamente staging xslrwgtupvruhwtcgdzi, VITE_APP_ENV=staging e VITE_STAGING_PROJECT_REF=xslrwgtupvruhwtcgdzi. A existência, o acesso e a propriedade das credenciais desse alvo precisam de autorização e validação separadas. Não copiar chaves do principal ou do staging antigo.
 - vercel.json define fallback SPA e headers. .vercelignore exclui ambientes privados, diagnósticos e backups na CLI; .gitignore protege os candidatos Git. Não enviar dumps ou arquivos privados.
 
 A URL HTTPS efetiva e o retorno OAuth serão registrados após o primeiro deploy restrito. Até esse teste, login Google em produção permanece NÃO VERIFICADO. Os comandos abaixo são um procedimento; não representam aprovação dos testes manuais pendentes.

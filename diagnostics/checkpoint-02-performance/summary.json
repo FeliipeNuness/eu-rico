@@ -1,0 +1,30 @@
+{
+  "scope": "Local code and mock tests; staging read-only; no provider transactions",
+  "mercadopagoPassed": 19,
+  "typecheck": true,
+  "lint": true,
+  "appBuild": true,
+  "siteBuild": true,
+  "e2eFirstRun": {
+    "passed": 26,
+    "failed": 2
+  },
+  "e2eAfterRemovingModalLazy": {
+    "passed": 2,
+    "failed": 0
+  },
+  "initialBytes": {
+    "before": 494995,
+    "after": 468037
+  },
+  "initialGzip": {
+    "before": 141825,
+    "after": 133624
+  },
+  "workerReads": {
+    "before": 7,
+    "after": 4
+  },
+  "realHomologation": "NO-GO",
+  "preservationHashes": true
+}
