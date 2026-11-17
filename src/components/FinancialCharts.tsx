@@ -12,10 +12,14 @@ const currencyTooltip = (value: unknown) => money(Number(value))
 
 export default function FinancialCharts({ data, endMonth }: { data: Data; endMonth: string }) {
   const [period, setPeriod] = useState<ChartPeriod>(6)
-  const { months, categories, totalExpenses } = useMemo(() => financialSeries(data, endMonth, period), [data, endMonth, period])
+  const { months, categories, totalExpenses, error } = useMemo(() => {
+    try { return { ...financialSeries(data, endMonth, period), error: '' } }
+    catch (failure) { return { months: [], categories: [], totalExpenses: 0, error: failure instanceof Error ? failure.message : 'Não foi possível calcular este período.' } }
+  }, [data, endMonth, period])
   const hasMovement = months.some(month => month.income !== 0 || month.expenses !== 0)
   const legend = <ul className="chart-legend"><li><span className="chart-swatch income"/>Receitas · linha contínua</li><li><span className="chart-swatch expense"/>Despesas · linha tracejada</li></ul>
   const axes = <><CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false}/><XAxis dataKey="label" tick={{ fill: 'var(--chart-label)', fontSize: 11 }} tickLine={false} axisLine={false} minTickGap={22}/><YAxis tickFormatter={compact} tick={{ fill: 'var(--chart-label)', fontSize: 11 }} tickLine={false} axisLine={false} width={55}/><Tooltip formatter={currencyTooltip} contentStyle={tooltipStyle} itemStyle={{ color: 'var(--chart-tooltip-text)' }} cursor={{ stroke: 'var(--chart-label)' }}/></>
+  if (error) return <section className="panel" aria-label="Gráficos financeiros"><p role="alert">{error}</p></section>
   return <section className="financial-charts" aria-label="Gráficos financeiros">
     <article className="panel financial-evolution">
       <div className="panel-heading"><div><span className="section-overline">SEU DINHEIRO NO TEMPO</span><h2>Evolução financeira</h2></div><label className="chart-period">Período<select aria-label="Período" value={period} onChange={event => setPeriod(Number(event.target.value) as ChartPeriod)}>{([3, 6, 12] as const).map(value => <option key={value} value={value}>{value} meses</option>)}</select></label></div>

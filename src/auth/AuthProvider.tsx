@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { AuthContext, type AuthContextValue } from './AuthContext'
-import { oauthRedirectError } from './oauthErrors'
+import { oauthRedirectError, oauthReturnUrl } from './oauthErrors'
 import { supabase, supabaseConfigError } from './supabaseClient'
+import { hasNoteDrafts, retainNoteDrafts } from '../domain/noteDrafts'
 
 function readableAuthError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error)
@@ -29,6 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       if (!mounted) return
       receivedAuthEvent = true
+      retainNoteDrafts(nextSession?.user.id || null)
       setSession(nextSession)
       setLoading(false)
       if (nextSession) setErrorState('')
@@ -52,16 +54,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `${window.location.origin}/`, queryParams: { prompt: 'select_account' } },
+        options: { redirectTo: oauthReturnUrl(window.location.href), queryParams: { prompt: 'select_account' } },
       })
       if (oauthError) setErrorState(readableAuthError(oauthError))
     } catch (oauthError) { setErrorState(readableAuthError(oauthError)) }
   }, [clearError])
 
   const signOut = useCallback(async () => {
+    if (hasNoteDrafts() && !window.confirm('Há um rascunho de anotação sem confirmação. Sair e descartar esse texto?')) throw new Error('Saída cancelada. Rascunho preservado.')
     if (!supabase) return
     const { error: signOutError } = await supabase.auth.signOut()
     if (signOutError) throw signOutError
+    retainNoteDrafts(null)
     setSession(null)
   }, [])
 

@@ -1,3 +1,8 @@
+export function oauthReturnUrl(href: string): string {
+  const url = new URL(href)
+  return `${url.origin}${['/assinar', '/conta'].includes(url.pathname) ? url.pathname : '/'}`
+}
+
 export function oauthRedirectError(href: string): { message: string; cleanUrl: string } | null {
   let url: URL
   try { url = new URL(href) } catch { return null }

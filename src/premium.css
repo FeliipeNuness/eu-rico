@@ -1,0 +1,124 @@
+/* Eu Rico 2: shared tokens extend the existing system without changing financial behavior. */
+:root {
+  --bg: #f6f5f0;
+  --surface: #fffefa;
+  --surface2: #eeefe8;
+  --forest: #183e31;
+  --text: #213b30;
+  --muted: #596b60;
+  --line: #dce2d8;
+  --radius: 12px;
+  --radius-control: 8px;
+  --shadow: 0 4px 20px #1c382b06;
+  --space-7: 48px;
+  --text-body: 15px;
+  --text-label: 13px;
+  --text-value: clamp(23px, 2.2vw, 32px);
+  --focus: #075b32;
+}
+html[data-theme='dark'] { --bg: #121c17; --surface: #1b2921; --surface2: #24382b; --text: #eff4ec; --muted: #b9cabb; --line: #475b4c; }
+.sidebar { background: var(--forest); overflow-y: auto; }
+.sidebar .nav-label { color: #b9cebf; margin: 18px 12px 8px; font-size: 11px; text-transform: none; letter-spacing: .02em; }
+.sidebar .nav-item { min-height: 44px; }
+.sidebar .workspace { margin-bottom: 4px; }
+.sidebar .mini-month { padding: 14px; margin-top: 16px; }
+.sidebar-bottom { padding-top: 16px; }
+.avatar, .profile-avatar { border-radius: 50%; }
+.topbar { border-bottom: 1px solid var(--line); }
+.auth-description { color: var(--text); }
+.auth-page .google-button:focus-visible, .auth-page a:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.sidebar button:focus-visible { outline-color: var(--gold); }
+.content { max-width: 1536px; padding-top: 24px; }
+.sync-summary { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 24px; background: var(--surface); }
+.sync-summary .local-storage-notice { line-height: 1.5; }
+.sync-summary .secondary-button { min-height: 44px; margin-bottom: 0; }
+.welcome-row { background: transparent; padding: 8px 0 24px; min-height: 136px; border-radius: 0; border-bottom: 1px solid var(--line); }
+.welcome-row::before, .welcome-row::after { display: none; }
+.welcome-row h1, .welcome-row .subheading { color: var(--text); }
+.welcome-row .eyebrow { color: var(--muted); }
+.welcome-row h1 { font-size: clamp(28px, 3vw, 40px); letter-spacing: -1.3px; }
+.quick-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 24px; }
+.quick-actions .secondary-button { background: var(--surface); min-height: 44px; }
+.overview-card { box-shadow: var(--shadow); border-radius: var(--radius); }
+.overview-value { font-size: var(--text-value); font-variant-numeric: tabular-nums; letter-spacing: -.7px; }
+.overview-card.finance-overview { border-top: 3px solid var(--green); }
+.card-kicker { font-size: 11px; letter-spacing: .06em; }
+.panel, .overview-card, .payment-overview { border-color: var(--line); }
+.page-header p, .subheading { font-size: var(--text-body); }
+.primary-button, .secondary-button { min-height: 44px; }
+button:not(:disabled) { transition: background-color 160ms, border-color 160ms, transform 160ms; }
+.primary-button:hover:not(:disabled), .secondary-button:hover:not(:disabled) { transform: translateY(-1px); }
+.primary-button:active:not(:disabled), .secondary-button:active:not(:disabled) { transform: translateY(0); }
+.rico-section { margin: 32px 0; }
+.rico-heading { display: flex; gap: 16px; align-items: center; margin-bottom: 20px; }
+.rico-mark { flex: 0 0 44px; height: 44px; display: grid; place-items: center; background: var(--green-pale); color: var(--positive); border: 1px solid var(--line); border-radius: 50%; }
+.rico-heading h2 { margin: 3px 0; font-size: 22px; letter-spacing: -.5px; }
+.rico-heading p { color: var(--muted); font-size: 13px; margin: 4px 0 0; }
+.rico-heading > .text-link { margin-left: auto; flex-shrink: 0; }
+.rico-insights { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
+.rico-insights > :only-child { grid-column: 1 / -1; }
+.rico-insight { position: relative; padding: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); display: flex; flex-direction: column; align-items: flex-start; }
+.rico-insight h3 { font-size: 16px; margin: 12px 0 8px; line-height: 1.4; }
+.rico-insight p { font-size: 14px; color: var(--text); line-height: 1.7; margin: 0 0 16px; overflow-wrap: anywhere; }
+.rico-insight .text-link { margin-top: auto; min-height: 44px; }
+.insight-dot { height: 7px; width: 7px; border-radius: 50%; background: var(--muted); }
+.tone-attention .insight-dot { background: var(--warning); }
+.tone-positive .insight-dot { background: var(--positive); }
+.rico-disclosure, .notes-privacy { color: var(--muted); font-size: 13px; line-height: 1.7; margin-top: 24px; }
+.rico-full .rico-heading { align-items: flex-start; margin-bottom: 32px; }
+.rico-full h1 { font-size: clamp(26px,3vw,36px); max-width: 650px; }
+.notes-page[hidden] { display: none; }
+.notes-tools { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; margin: 24px 0; }
+.notes-tools label, .note-editor label { display: flex; flex-direction: column; gap: 8px; color: var(--muted); font-size: 13px; }
+.notes-tools > label:first-child { flex: 1 1 260px; }
+.notes-tools > label:not(:first-child) { flex: 1 1 170px; }
+.notes-tools input, .notes-tools select, .note-editor input, .note-editor select, .note-editor textarea { width: 100%; min-width: 0; background: var(--surface); color: var(--text); font: inherit; font-size: 15px; border: 1px solid var(--muted); border-radius: var(--radius-control); padding: 12px; min-height: 44px; }
+.notes-search { position: relative; }
+.notes-search svg { position: absolute; top: 15px; left: 12px; }
+.notes-search input { padding-left: 38px; }
+.notes-layout { display: grid; gap: 24px; }
+.notes-layout.has-editor { grid-template-columns: minmax(220px, .7fr) minmax(0,1.3fr); align-items: start; }
+.notes-list { display: grid; grid-template-columns: repeat(auto-fill,minmax(min(100%,240px),1fr)); gap: 16px; min-width: 0; }
+.has-editor .notes-list { grid-template-columns: 1fr; }
+.note-card { width: 100%; min-width: 0; text-align: left; padding: 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--text); }
+.note-card:hover { transform: translateY(-2px); border-color: var(--muted); }
+.note-card.selected { outline: 2px solid var(--focus); outline-offset: -2px; }
+.note-card h2 { font-size: 18px; line-height: 1.4; margin: 16px 0 8px; overflow-wrap: anywhere; }
+.note-card p { color: var(--muted); font-size: 14px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.note-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--muted); }
+.note-meta > span { display: inline-flex; align-items: center; gap: 4px; }
+.note-card time { font-size: 12px; color: var(--muted); display: block; margin-top: 20px; }
+.note-editor { padding: 24px; min-width: 0; }
+.note-editor-head, .note-editor-options, .note-editor-foot { display: flex; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.note-editor-head > span { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.note-editor .note-title-label input { font-size: 22px; font-weight: 600; }
+.note-editor-options { margin: 20px 0; align-items: flex-end; flex-wrap: wrap; }
+.note-editor-options > label { flex: 1; min-width: 140px; }
+.note-editor textarea { line-height: 1.8; resize: vertical; min-height: 280px; }
+.note-conflict-preview { max-height: 180px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; padding: 12px; border: 1px solid var(--line); background: var(--surface); }
+.notes-error .secondary-button { margin: 8px 8px 0 0; }
+.note-editor-foot { margin: 16px 0 0; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.note-editor-foot .text-link, .notes-privacy .text-link { min-height: 44px; }
+.notes-error { padding: 20px; background: var(--danger-bg); border: 1px solid var(--expense); border-radius: var(--radius); margin: 20px 0; }
+.notes-error p { margin: 0 0 12px; }
+.notes-skeleton { padding: 48px 24px; border-radius: var(--radius); background: var(--surface2); color: var(--muted); }
+.notes-list .empty-state { grid-column: 1 / -1; }
+@media (min-width: 981px) { .sidebar { width: 248px; } }
+@media (max-width: 1100px) { .rico-insights { grid-template-columns: repeat(2,minmax(0,1fr)); } .rico-heading { flex-wrap: wrap; } .rico-heading > .text-link { margin-left: 60px; } }
+@media (max-width: 640px) {
+  .content { padding: 20px 16px; }
+  .welcome-row { padding-top: 0; }
+  .quick-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  .quick-actions button { padding: 10px 8px; font-size: 12px; }
+  .rico-insights, .notes-layout.has-editor { grid-template-columns: 1fr; }
+  .rico-heading > div { flex: 1; min-width: 180px; }
+  .rico-heading > .text-link { margin-left: 0; }
+  .rico-heading h2 { font-size: 20px; }
+  .rico-insight, .note-editor, .note-card { padding: 20px; }
+  .has-editor .note-editor { grid-row: 1; }
+  .note-editor-head { gap: 8px; }
+  .notes-tools { gap: 12px; }
+  .notes-tools > label { flex-basis: 100% !important; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

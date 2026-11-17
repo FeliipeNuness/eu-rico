@@ -1,12 +1,13 @@
-import { execFileSync, spawnSync } from 'node:child_process'
+import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
-mkdirSync('diagnostics/final-launch',{recursive:true})
+const output = process.env.EU_RICO_TEST_DIAGNOSTICS || 'diagnostics/final-launch'
+mkdirSync(output,{recursive:true})
 const files=execFileSync('git',['ls-files','--cached','--others','--exclude-standard'],{encoding:'utf8'}).trim().split(/\r?\n/).filter(Boolean)
 const findings=[]
 const syntheticFixtures=[]
 const knownFixture=(token,file)=>file==='tests/domain.test.mjs'&&token.split('.')[2]==='signature'&&Object.keys(JSON.parse(Buffer.from(token.split('.')[1],'base64url').toString())).join(',')==='role'
 for(const file of files){
- if(!/\.(tsx?|mjs|json|md|html|css)$/.test(file)||file.endsWith('package-lock.json'))continue
+ if((! /\.(tsx?|mjs|json|md|html|css)$/.test(file) && !/(^|\/)\.env($|\.)/.test(file))||file.endsWith('package-lock.json'))continue
  const text=readFileSync(file,'utf8')
  const patterns=[['private-key',/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/],['supabase-secret',/sb_secret_[A-Za-z0-9_-]{16,}/],['google-secret',/GOCSPX-[A-Za-z0-9_-]{16,}/],['github-token',/gh[pousr]_[A-Za-z0-9]{30,}/]]
  for(const [type,re] of patterns)if(re.test(text))findings.push({file,type})
@@ -17,7 +18,7 @@ for(const file of files){
   }}catch{}
  }
 }
-const sensitiveFiles=files.filter(x=>/(^|\/)\.env($|\.)/.test(x)&&!['.env.example','.env.staging.example'].includes(x))
+const sensitiveFiles=files.filter(x=>/(^|\/)\.env($|\.)/.test(x)&&!['.env.example','.env.staging.example','supabase/functions/.env.example'].includes(x))
 const historyFindings=[]
 const commits=execFileSync('git',['rev-list','--all'],{encoding:'utf8'}).trim().split(/\r?\n/).filter(Boolean)
 for(const commit of commits){
@@ -37,6 +38,6 @@ for(const commit of commits){
  }
 }
 const result={candidateFiles:files.length,findings,sensitiveFiles,historyCommits:commits.length,historyFindings,syntheticFixtures,scope:'Known secret patterns in Git candidates and reachable commit patches; not an exhaustive credential guarantee. Reports never include matched values.'}
-writeFileSync('diagnostics/final-launch/secret-scan.json',JSON.stringify(result,null,2)+'\n')
+writeFileSync(`${output}/secret-scan.json`,JSON.stringify(result,null,2)+'\n')
 console.log(JSON.stringify(result,null,2))
 if(findings.length||sensitiveFiles.length||historyFindings.length)process.exitCode=1

@@ -1,11 +1,11 @@
 import { backupMigrationSource } from '../src/domain/storage.ts'
-import { stagingTargetError, PROTECTED_PROJECT_REF } from '../src/auth/environment.ts'
+import { stagingTargetError, PROTECTED_PROJECT_REF, STAGING_PROJECT_REF } from '../src/auth/environment.ts'
 import { canonical, localCandidates, mergeLocalData } from '../src/domain/migration.ts'
 import { greeting, firstName } from '../src/domain/greeting.ts'
 import { expenseStatus, setExpensePayment, nextExpense } from '../src/domain/payments.ts'
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { getMonthlyTotals, goalMonthlyContribution, goalProgress, roundMoney } from '../src/domain/finance.ts'
+import { FinancialCalculationError, getMonthlyTotals, goalMonthlyContribution, goalProgress, roundMoney, sumMoney } from '../src/domain/finance.ts'
 import { parseBackup, createBackup } from '../src/domain/backup.ts'
 import { initialData, validateData, isDate, STORAGE_KEY } from '../src/domain/model.ts'
 import { loadData, writeData, backupCurrentData, restoreData } from '../src/domain/storage.ts'
@@ -13,8 +13,61 @@ import { filterTasks } from '../src/domain/tasks.ts'
 import { duplicatesIncome, upsertById, removeById } from '../src/domain/collections.ts'
 import { userStorageKey } from '../src/domain/storage.ts'
 import { validateSupabaseConfig } from '../src/auth/config.ts'
-import { oauthRedirectError } from '../src/auth/oauthErrors.ts'
+import { oauthRedirectError, oauthReturnUrl } from '../src/auth/oauthErrors.ts'
 import { financialSeries } from '../src/domain/charts.ts'
+import { financialInsights } from '../src/domain/insights.ts'
+import { selectNotes, validNoteDraft } from '../src/domain/notes.ts'
+
+test('future paid dates do not affect realized totals, categories or Rico before their date', () => {
+  const future = { id: 'future', description: 'Importado', amount: 100, category: 'Outros', date: '2026-11-25', type: 'Fixo', paymentStatus: 'paid', paidAt: '2026-11-25' }
+  const data = { ...initialData, expenses: [future] }, before = JSON.stringify(data)
+  assert.equal(getMonthlyTotals(data, '2026-11', '2026-11-16').expenses, 0)
+  assert.equal(getMonthlyTotals(data, '2026-11', '2026-11-25').expenses, 100)
+  assert.equal(financialSeries(data, '2026-11', 3, '2026-11-16').totalExpenses, 0)
+  assert.equal(financialInsights(data, '2026-11', '2026-11-16').some(item => item.id === 'category'), false)
+  assert.equal(JSON.stringify(data), before)
+})
+
+test('legacy decimal sums are exact until aggregate rounding and extreme totals fail explicitly without mutation', () => {
+  assert.equal(sumMoney([{ amount: 0.005 }, { amount: 0.005 }]), 0.01)
+  assert.equal(sumMoney([{ amount: 0.0049999 }, { amount: 0.0000001 }]), 0.01)
+  assert.equal(sumMoney([{ amount: -1.23 }]), -1.23)
+  assert.equal(sumMoney([{ amount: 1e-8 }, { amount: .00999999 }]), .01)
+  const entries = [...Array.from({ length: 100 }, () => ({ amount: 1000000000000 })), { amount: .01 }]
+  const before = JSON.stringify(entries)
+  assert.throws(() => sumMoney(entries), FinancialCalculationError)
+  assert.equal(JSON.stringify(entries), before)
+  const data = { ...initialData, expenses: [expense('fraction-a', .005, '2026-02-01'), expense('fraction-b', .005, '2026-02-01')] }
+  const insight = financialInsights(data, '2026-02', '2026-02-28').find(item => item.id === 'category')
+  assert.match(insight.text, /100%/)
+  assert.match(insight.text, /0,01/)
+})
+
+test('Rico uses paid dates, avoids invented trends, handles empty data and goal remainder', () => {
+  assert.deepEqual(financialInsights(initialData, '2026-11', '2026-11-16').map(item => item.id), ['empty'])
+  const data = { ...initialData, income: [{ id: 'i', name: 'Receita', amount: 100, date: '2026-11-01', recurrence: 'Única' }], expenses: [
+    { id: 'a', description: 'Pago', amount: 200, date: '2026-10-01', paidAt: '2026-11-02', paymentStatus: 'paid', category: 'Moradia', type: 'Fixo' },
+    { id: 'b', description: 'Pendente', amount: 30, date: '2026-11-20', paymentStatus: 'pending', category: 'Outros', type: 'Variável' },
+    { id: 'c', description: 'Legado', amount: 40, date: '2026-11-02', category: 'Outros', type: 'Variável' },
+  ], goals: [{ id: 'g', name: 'Reserva', target: 1000, saved: 250 }] }
+  const insights = financialInsights(data, '2026-11', '2026-11-16')
+  assert.match(insights.find(item => item.id === 'balance').text, /100,00/)
+  assert.match(insights.find(item => item.id === 'category').text, /100%/)
+  assert.match(insights.find(item => item.id === 'upcoming').text, /30,00/)
+  assert.match(insights.find(item => item.id === 'goal').text, /750,00/)
+  assert.equal(insights.some(item => item.id === 'increase'), false)
+})
+
+test('notes filter title and content, pin first and validate boundaries', () => {
+  const draft = { title: 'Ideia', content: 'Conta de energia', category: null, is_pinned: false }
+  assert.equal(validNoteDraft(draft), true)
+  assert.equal(validNoteDraft({ ...draft, content: 'a'.repeat(20001) }), false)
+  assert.equal(validNoteDraft({ ...draft, category: 'Outra' }), false)
+  const notes = [{ ...draft, id: 'a', category: 'Financeiro', updated_at: '2026-11-02', created_at: '2026-11-01' }, { ...draft, id: 'b', is_pinned: true, updated_at: '2026-11-01', created_at: '2026-11-02' }]
+  assert.deepEqual(selectNotes(notes, 'ENERGIA', '', 'updated_at').map(note => note.id), ['b', 'a'])
+  assert.deepEqual(selectNotes(notes, '', 'Financeiro', 'created_at').map(note => note.id), ['a'])
+  assert.deepEqual(selectNotes(notes, 'inexistente', '', 'updated_at'), [])
+})
 
 test('local greeting boundaries and authenticated first name fallback', () => {
   for (const [hour, expected] of [[0,'Boa noite'],[4,'Boa noite'],[5,'Bom dia'],[11,'Bom dia'],[12,'Boa tarde'],[17,'Boa tarde'],[18,'Boa noite'],[23,'Boa noite']]) assert.equal(greeting(hour),expected)
@@ -289,14 +342,26 @@ test('cloud backups preserve identity and accept old formats without inventing a
   assert.ok(validateSupabaseConfig('http://remote.supabase.co','sb_publishable_public').error)
 })
 
+test('OAuth returns only to fixed same-origin paths', () => {
+  for (const path of ['/', '/assinar', '/conta']) assert.equal(oauthReturnUrl(`http://127.0.0.1:5176${path}?redirect_to=https://example.invalid#token`),`http://127.0.0.1:5176${path}`)
+  assert.equal(oauthReturnUrl('http://127.0.0.1:5176/other?next=//example.invalid'),'http://127.0.0.1:5176/')
+})
+
 test('staging refuses the principal project, inherited defaults and mismatched refs', () => {
-  const ref = 'abcdefghijklmnopqrst'
+  const ref = STAGING_PROJECT_REF
   assert.ok(stagingTargetError('staging',undefined,'https://'+PROTECTED_PROJECT_REF+'.supabase.co'))
   assert.ok(stagingTargetError('staging','staging','https://'+PROTECTED_PROJECT_REF+'.supabase.co',PROTECTED_PROJECT_REF))
   assert.ok(stagingTargetError('staging','staging','https://'+ref+'.supabase.co','different'))
   assert.ok(stagingTargetError('staging','staging','http://'+ref+'.supabase.co',ref))
   assert.equal(stagingTargetError('staging','staging','https://'+ref+'.supabase.co',ref),null)
   assert.equal(stagingTargetError('production',undefined,'https://'+PROTECTED_PROJECT_REF+'.supabase.co'),null)
+  for (const other of ['mbksdigxfhsnxocsjicp','abcdefghijklmnopqrst']) {
+    assert.ok(stagingTargetError('staging','staging',`https://${other}.supabase.co`,other))
+    const key = `header.${Buffer.from(JSON.stringify({role:'anon',ref:other})).toString('base64url')}.signature`
+    assert.ok(stagingTargetError('staging','staging',`https://${ref}.supabase.co`,ref,key))
+  }
+  const key = `header.${Buffer.from(JSON.stringify({role:'anon',ref})).toString('base64url')}.signature`
+  assert.equal(stagingTargetError('staging','staging',`https://${ref}.supabase.co`,ref,key),null)
 })
 
 test('migration archives the exact original before upload and cancels on quota or wrong account', () => {

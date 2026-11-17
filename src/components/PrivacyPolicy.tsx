@@ -1,55 +1,41 @@
 import { isPrivacyControllerConfigured, privacyController } from '../privacy/controller'
 
 export default function PrivacyPolicy({ onBack }: { onBack: () => void }) {
-  return <main className="privacy-page">
-    <article className="privacy-card" aria-labelledby="privacy-title">
-      <a href="/" onClick={event => { event.preventDefault(); onBack() }}>← Voltar ao Eu Rico</a>
-      <p className="privacy-eyebrow">EU RICO · PRIVACIDADE</p>
-      <h1 id="privacy-title">Política de Privacidade</h1>
-      <p className="privacy-updated">{isPrivacyControllerConfigured ? 'Atualizada em 2 de novembro de 2026' : 'Versão para revisão: 2 de novembro de 2026'}</p>
-      <p>Esta política descreve o tratamento de dados no painel de tarefas, organização pessoal e planejamento financeiro do Eu Rico. O aplicativo não se conecta a bancos, não movimenta dinheiro e não oferece recomendação de investimento.</p>
-
-      <h2>Controlador e contato</h2>
-      {isPrivacyControllerConfigured ? <>
-        <p>Controlador: {privacyController.name}{privacyController.legalName && ` (${privacyController.legalName})`}{privacyController.taxId && ` · ${privacyController.taxId}`}{privacyController.address && ` · ${privacyController.address}`}.</p>
-        {privacyController.dataProtectionOfficer && <p>Contato do encarregado: {privacyController.dataProtectionOfficer}</p>}
-        <p>Canal para privacidade e solicitações LGPD: {privacyController.privacyContact}</p>
-      </> : <div className="privacy-pending" role="note">
-        <b>Publicação definitiva pendente.</b>
-        <p>Esta versão aguarda revisão e aprovação do responsável antes da operação pública.</p>
-        <p>Responsável informado para revisão: {privacyController.name}. Canal informado: {privacyController.privacyContact}.</p>
-      </div>}
-
-      <h2>Dados tratados e finalidades</h2>
-      <ul>
-        <li><b>Autenticação:</b> ao escolher “Continuar com Google”, o aplicativo inicia Google OAuth pelo Supabase Auth, com fluxo PKCE. O Google atua na autenticação da conta; o Supabase Auth processa o fluxo, mantém a sessão e fornece ao aplicativo o identificador necessário para restringir o acesso. O código não solicita acesso a Gmail, contatos ou arquivos do Google. Dados e retenção sob controle dos provedores seguem as respectivas políticas e configurações, que não foram verificadas externamente nesta auditoria.</li>
-        <li><b>Dados do painel:</b> nome de exibição, preferências de tema e orçamento, tarefas, descrições, datas, receitas, despesas e metas são enviados ao PostgreSQL do Supabase quando o usuário confirma operações. Os registros pertencem à identidade autenticada. Após ativação e validação do banco, registros confirmados são carregados ao entrar, recarregar ou solicitar atualização em outro dispositivo. Não há sincronização em tempo real nem modo offline completo.</li>
-        <li><b>Dados locais anteriores e recuperação:</b> registros de versões anteriores continuam no navegador e só são enviados à conta atual após prévia e confirmação. A aplicação não procura registros locais de outras contas. Alterações enviadas também podem gerar uma cópia local de recuperação separada por conta, inclusive quando o resultado da gravação não pôde ser confirmado. Essas cópias não são criptografadas pelo aplicativo.</li>
-        <li><b>Backups:</b> o usuário pode exportar JSON com os registros e o identificador da conta, e restaurar arquivos após validação e confirmação do destino. A restauração substitui os registros da conta na nuvem e preserva a versão anterior numa tabela privada de recuperação. Backups baixados ficam fora do controle do aplicativo e podem continuar em dispositivos ou serviços usados para armazená-los.</li>
-        <li><b>Dados técnicos e fornecedores:</b> a interface utiliza hospedagem Vercel; Google fornece autenticação e Supabase fornece Auth e PostgreSQL. Esses fornecedores podem processar informações técnicas necessárias aos serviços. O banco principal está configurado na região us-east-1 do Supabase; isso não determina todos os locais de processamento dos fornecedores. Consulte as políticas de <a href="https://vercel.com/legal/privacy-policy">Vercel</a>, <a href="https://supabase.com/privacy">Supabase</a> e <a href="https://policies.google.com/privacy">Google</a>. Práticas, contratos e retenções aplicáveis devem ser confirmados pelo responsável.</li>
-      </ul>
-
-      <h2>Bases legais</h2>
-      <p>As bases legais aplicáveis devem ser confirmadas pelo controlador após mapear os fluxos e fornecedores reais. Em princípio, a operação das funções solicitadas pode envolver procedimentos preliminares ou execução de contrato, quando aplicável; segurança pode exigir avaliação documentada de legítimo interesse. Esta descrição não substitui a determinação jurídica da base para cada finalidade. Não se presume publicidade ou venda de dados.</p>
-
-      <h2>Armazenamento, exclusão e sessão</h2>
-      <p>Registros confirmados são mantidos na conta na nuvem até serem alterados ou excluídos, observadas retenções aplicáveis. Cópias de recuperação podem conservar versões anteriores; não há expiração automática implementada para essas cópias. Prazos e retenções de logs e backups dos fornecedores precisam ser confirmados pelo responsável antes da publicação. Não se presume eliminação imediata de todas as cópias ao excluir um registro.</p>
-      <p>Registros antigos e cópias locais permanecem no navegador até remoção pelo usuário, limpeza do site ou perda do dispositivo. Separação por conta não protege contra acesso ao mesmo perfil do navegador. Limpar o site não exclui registros já confirmados na nuvem, mas pode perder alterações ainda não confirmadas e dados locais não importados.</p>
-      <p>Sair da conta encerra a sessão de autenticação do Supabase, mas não apaga automaticamente os registros locais, backups exportados, dados que Google/Supabase possam conservar segundo suas políticas, nem outros dados do navegador. A exclusão da conta de autenticação não está disponível no aplicativo e também não removeria necessariamente essas cópias.</p>
-      <p>Excluir registros no painel altera os dados ativos da conta na nuvem e será refletido nos outros dispositivos ao recarregar. Para exclusão de conta e dos registros associados, solicite pelo contato publicado. O procedimento requer verificação de identidade e execução administrativa autorizada; não existe exclusão de conta por autoatendimento. A exclusão da identidade no Supabase está preparada para remover registros associados e cópias de recuperação do aplicativo, mas não apaga automaticamente arquivos exportados, dados locais ou retenções dos fornecedores. Exporte um backup antes de solicitar eliminação se quiser conservar seus registros.</p>
-
-      <h2>Cookies e tecnologias semelhantes</h2>
-      <p>A busca no código do projeto não encontrou uso explícito de cookies, analytics, pixels, publicidade ou monitoramento. O SDK de autenticação usa armazenamento persistente do navegador para a sessão; configurações de navegador, provedor e produção podem introduzir tecnologias adicionais e não foram verificadas externamente. Não há banner de consentimento implementado porque não foi identificado rastreamento não essencial no código examinado. Essa conclusão precisa ser reavaliada se integrações forem adicionadas ou após inspeção de rede no ambiente publicado.</p>
-
-      <h2>Seus direitos e como solicitar</h2>
-      <p>Conforme a LGPD e sua aplicação ao caso, o titular pode solicitar confirmação e acesso, correção, anonimização, bloqueio ou eliminação de dados tratados pelo controlador, informações sobre compartilhamentos e demais direitos aplicáveis. No painel é possível editar e excluir registros, exportar dados ou apagá-los no navegador seguindo as instruções acima. Para dados de autenticação, o titular também pode consultar os controles do Google e do Supabase; essas ações perante os provedores não substituem um pedido ao controlador do Eu Rico.</p>
-      <p>Pedidos ao controlador devem ser enviados pelo canal de privacidade identificado nesta política. O responsável deve monitorar o canal, verificar a identidade de forma proporcional, registrar e responder às solicitações nos prazos e condições legais aplicáveis. Não envie dados financeiros por canais informais.</p>
-
-      <h2>Compartilhamento, segurança e menores</h2>
-      <p>Google fornece autenticação; Supabase fornece autenticação e armazenamento PostgreSQL. O acesso aos registros privados foi projetado com regras de propriedade no banco e operações autenticadas. Isso precisa ser validado no ambiente efetivamente publicado e não constitui garantia absoluta de segurança. Hospedagem, regiões de processamento, transferências internacionais e retenções efetivas ainda dependem de confirmação do responsável. Não há integração bancária, pagamentos ou venda de dados implementados. Proteja o dispositivo e os backups. O produto não é direcionado a crianças e adolescentes.</p>
-
-      <h2>Alterações</h2>
-      <p>Esta política deve ser atualizada quando o funcionamento real, os fornecedores ou as finalidades mudarem. A publicação definitiva depende do preenchimento e da validação das informações do controlador e do canal de contato, além da confirmação das práticas externas descritas como não verificadas.</p>
-    </article>
-  </main>
+  return <main className="privacy-page"><article className="privacy-card" aria-labelledby="privacy-title">
+    <a href="/" onClick={event => { event.preventDefault(); onBack() }}>← Voltar ao Eu Rico</a>
+    <p className="privacy-eyebrow">EU RICO · PRIVACIDADE</p><h1 id="privacy-title">Política de Privacidade</h1>
+    <p className="privacy-updated">Minuta comercial para revisão: 16 de novembro de 2026</p>
+    {!isPrivacyControllerConfigured && <p role="note">Publicação definitiva pendente de revisão jurídica, confirmação das práticas e aprovação do responsável.</p>}
+    <h2>Controlador e contato</h2>
+    <p>Responsável identificado: {privacyController.name || 'Identificação pendente'}. Canal de privacidade: {privacyController.privacyContact || 'Canal pendente'}.</p>
+    {privacyController.legalName && <p>Razão social: {privacyController.legalName}.</p>}{privacyController.taxId && <p>Identificação fiscal: {privacyController.taxId}.</p>}{privacyController.address && <p>Endereço para comunicações: {privacyController.address}.</p>}{privacyController.dataProtectionOfficer && <p>Encarregado: {privacyController.dataProtectionOfficer}.</p>}
+    <p>Dados societários, endereço formal e necessidade de encarregado devem ser confirmados pelo responsável conforme sua situação. Nenhum dado pendente foi substituído por informação fictícia.</p>
+    <h2>Dados tratados e finalidades</h2>
+    <ul>
+      <li>Google e Supabase Auth: identificador da conta, email, nome e dados de sessão necessários ao login, manutenção do acesso e isolamento dos registros. O aplicativo não solicita acesso a Gmail, contatos ou arquivos do Google.</li>
+      <li>Organização pessoal: nome de exibição, tema, receitas, despesas, datas de pagamento, categorias, tarefas, metas, preferências e anotações privadas. Esses dados permitem as funções solicitadas, cálculos e insights determinísticos.</li>
+      <li>Assinaturas Mercado Pago e contratos históricos Cakto: identificadores de intenção, pedido, assinatura e ciclo, valores, situação e datas de cobrança, confirmação, cancelamento e eventos necessários à reconciliação. O checkout trata os dados exigidos pelo provedor responsável; o Eu Rico não armazena número completo de cartão ou código de segurança.</li>
+      <li>Operação e atendimento: registros mínimos de estado, erros, revisão, solicitações de exclusão e auditoria de cobrança. Não é necessário registrar descrições financeiras completas, credenciais ou tokens em logs.</li>
+      <li>Recuperação e exportação: versões anteriores de dados financeiros, cópias locais de recuperação e arquivos que o usuário solicita baixar. Rascunhos de notas podem ser conservados em memória da sessão durante indisponibilidade, sem representar salvamento na nuvem.</li>
+    </ul>
+    <p>O Eu Rico não consulta bancos, movimenta dinheiro, compra investimentos ou envia dados a modelos de IA. Os insights usam os registros autorizados e não substituem aconselhamento profissional.</p>
+    <h2>Bases legais e escolhas</h2>
+    <p>O mapa de bases por finalidade deve ser aprovado pelo controlador. A prestação das funções e da assinatura solicitadas pode envolver execução de contrato; deveres legais e defesa de direitos podem justificar retenções específicas. Qualquer tratamento por legítimo interesse requer avaliação apropriada. Consentimento, quando necessário, deve ser específico e não é presumido para publicidade, treinamento ou uso secundário dos dados.</p>
+    <h2>Fornecedores e transferências</h2>
+    <p>Google fornece autenticação; Supabase fornece Auth e PostgreSQL; Mercado Pago fornece as novas assinaturas após ativação e Cakto continua responsável pelos contratos anteriores; a configuração de hospedagem utiliza Vercel. Cada fornecedor pode tratar dados técnicos necessários e dados sob suas próprias responsabilidades. Consulte as políticas de <a href="https://policies.google.com/privacy">Google</a>, <a href="https://supabase.com/privacy">Supabase</a>, <a href="https://www.cakto.com.br">Cakto</a>, <a href="https://www.mercadopago.com.br/privacidade">Mercado Pago</a> e <a href="https://vercel.com/legal/privacy-policy">Vercel</a>.</p>
+    <p>Regiões efetivas, subprocessadores, retenções e mecanismos aplicáveis a transferências internacionais precisam ser confirmados nos contratos e nas configurações reais antes da publicação. Um teste local não comprova as práticas de um ambiente hospedado.</p>
+    <h2>Armazenamento, retenção e segurança</h2>
+    <p>Registros confirmados pertencem à conta autenticada. Regras de propriedade no banco e operações autenticadas restringem acesso; não constituem garantia absoluta de segurança. O serviço precisa de conexão para carregar e confirmar gravações. Não há sincronização em tempo real ou modo offline completo.</p>
+    <p>Excluir um registro ativo não apaga necessariamente suas versões de recuperação, logs, transações ou backups. Não há expiração automática geral dessas cópias implementada. Prazos por finalidade, necessidade de retenção legal, procedimentos de eliminação e retenções de fornecedores são pendências do responsável, sem prazo arbitrário nesta minuta.</p>
+    <p>Originais locais e cópias de recuperação podem conter texto legível. Separação por conta não protege contra outra pessoa usando o mesmo perfil do navegador. Logout não apaga automaticamente arquivos baixados ou cópias locais. Rascunhos em memória são descartados ao sair da sessão após aviso; não substituem backup e podem ser perdidos ao fechar o navegador.</p>
+    <h2>Direitos, exportação e exclusão</h2>
+    <p>O titular pode solicitar confirmação e acesso, correção, informações de compartilhamento e demais direitos aplicáveis, incluindo eliminação conforme as hipóteses e exceções legais. Pedidos podem ser enviados pelo canal acima; o atendimento deve verificar identidade de forma proporcional e informar o tratamento dado à solicitação.</p>
+    <p>O aplicativo permite editar/excluir registros e exportar dados. A exportação da área de conta inclui registros financeiros, anotações e histórico de cobrança e permanece disponível para a própria conta sem assinatura, quando o banco estiver atualizado. O backup financeiro mantém formato separado de restauração; notas não são importadas automaticamente por esse fluxo.</p>
+    <p>Solicitar exclusão de conta não executa apagamento imediato. O responsável deve verificar identidade, cobranças futuras, retenções e escopo antes da execução administrativa. Eliminar a identidade não cancela automaticamente cobranças no Mercado Pago ou na Cakto nem apaga cópias exportadas ou retenções dos fornecedores. Exclusão de registros no banco não substitui esse procedimento.</p>
+    <h2>Cookies e tecnologias equivalentes</h2>
+    <p>O SDK de autenticação usa armazenamento persistente do navegador para a sessão. O código examinado não inclui publicidade, pixels ou analytics opcionais. O checkout e os fornecedores podem usar tecnologias próprias, a verificar no ambiente real. Não foi adicionado banner para rastreamento não identificado; qualquer nova tecnologia não essencial exige nova avaliação e escolhas aplicáveis.</p>
+    <h2>Atualizações e público</h2>
+    <p>O serviço não é direcionado a crianças e adolescentes. Alterações relevantes de finalidade, fornecedores e condições devem ser comunicadas. Esta minuta exige revisão jurídica e aprovação antes de publicação; não declara conformidade integral com a LGPD.</p>
+    <p>Informações oficiais sobre <a href="https://www.gov.br/anpd/pt-br/assuntos/titular-de-dados/direito-dos-titulares">direitos dos titulares na ANPD</a>. Consulte também os <a href="/termos">Termos de Uso</a>.</p>
+  </article></main>
 }

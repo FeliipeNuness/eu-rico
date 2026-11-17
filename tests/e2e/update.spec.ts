@@ -4,6 +4,7 @@ import { cloudDatabase, syntheticSession, USER_A } from './cloud-database'
 import { asUser } from '../database.mjs'
 
 async function navigate(page: Page, name: string) {
+  await expect(page.locator('.sidebar')).toBeAttached()
   const menu = page.getByRole('button', { name:'Abrir menu',exact:true })
   if(await menu.isVisible()) await menu.click()
   await page.locator('.sidebar nav').getByRole('button', { name:new RegExp(`^${name}(?: [0-9]+)?$`) }).click()

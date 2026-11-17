@@ -1,4 +1,5 @@
 import type { Data, Goal } from './model.ts'
+import { MAX_AMOUNT } from './model.ts'
 
 export const roundMoney = (value: number) => {
   if (!Number.isFinite(value)) return 0
@@ -7,21 +8,33 @@ export const roundMoney = (value: number) => {
 }
 export const money = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(roundMoney(value))
 
-// Integer micro-units preserve legacy fractions of a cent until the final aggregate.
+export class FinancialCalculationError extends Error {}
+
+// Sum decimal source values exactly; round only the aggregate and fail before an unsafe numeric projection.
 export function sumMoney(items: { amount: number }[]) {
-  const units = items.reduce((sum, item) => {
-    const decimal = String(item.amount)
-    const [whole, fraction = ''] = (decimal.includes('e') ? item.amount.toFixed(6) : decimal).split('.')
-    return sum + BigInt(whole) * 1000000n + BigInt(fraction.padEnd(6, '0').slice(0, 6))
-  }, 0n)
-  return Number((units + 5000n) / 10000n) / 100
+  let units = 0n, scale = 0
+  for (const { amount } of items) {
+    if (!Number.isFinite(amount)) throw new FinancialCalculationError('Há um valor inválido para cálculo. Os registros não foram alterados.')
+    const [decimal, exponent = '0'] = String(Math.abs(amount)).toLowerCase().split('e')
+    const [whole, fraction = ''] = decimal.split('.')
+    const places = fraction.length - Number(exponent)
+    const itemScale = Math.max(0, places)
+    if (itemScale > scale) { units *= 10n ** BigInt(itemScale - scale); scale = itemScale }
+    const value = BigInt(whole + fraction) * 10n ** BigInt(Math.max(0, -places) + scale - itemScale)
+    units += amount < 0 ? -value : value
+  }
+  const magnitude = units < 0n ? -units : units
+  const divisor = 10n ** BigInt(Math.max(0, scale - 2))
+  const cents = scale > 2 ? (magnitude + divisor / 2n) / divisor : magnitude * 10n ** BigInt(2 - scale)
+  if (cents > BigInt(MAX_AMOUNT) * 100n) throw new FinancialCalculationError('O total excede o limite seguro de cálculo. Seus registros foram preservados; exporte os dados para conferência.')
+  return Number(units < 0n ? -cents : cents) / 100
 }
 
 export function getMonthlyTotals(data: Pick<Data, 'income' | 'expenses' | 'savingTarget'>, monthKey: string, localDate = new Date().toLocaleDateString('sv-SE')) {
   const monthlyIncome = data.income.filter(item => !!item.date && item.date.startsWith(monthKey) && item.date <= localDate)
   const monthExpenses = data.expenses.filter(item => item.date.startsWith(monthKey))
   const income = sumMoney(monthlyIncome)
-  const paidExpenses = data.expenses.filter(item => item.paymentStatus === 'paid' && item.paidAt?.startsWith(monthKey))
+  const paidExpenses = data.expenses.filter(item => item.paymentStatus === 'paid' && item.paidAt?.startsWith(monthKey) && item.paidAt <= localDate)
   const pendingExpenses = monthExpenses.filter(item => item.paymentStatus === 'pending')
   const unknownExpenses = monthExpenses.filter(item => !item.paymentStatus)
   const pending = sumMoney(pendingExpenses)

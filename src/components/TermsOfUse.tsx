@@ -1,23 +1,33 @@
 import { isPrivacyControllerConfigured, privacyController } from '../privacy/controller'
+import { monthlyPrice } from '../billing/commercial'
 
 export default function TermsOfUse({ onBack }: { onBack: () => void }) {
   return <main className="privacy-page"><article className="privacy-card" aria-labelledby="terms-title">
     <a href="/" onClick={event => { event.preventDefault(); onBack() }}>← Voltar ao Eu Rico</a>
-    <h1 id="terms-title">Termos de Uso</h1>
-    <p className="privacy-updated">{isPrivacyControllerConfigured ? 'Atualizados em 2 de novembro de 2026' : 'Versão para revisão: 2 de novembro de 2026'}</p>
-    {!isPrivacyControllerConfigured && <p>Estes termos precisam de aprovação do responsável antes do lançamento público.</p>}
+    <h1 id="terms-title">Termos de Uso</h1><p className="privacy-updated">Minuta comercial para revisão: 16 de novembro de 2026</p>
+    {!isPrivacyControllerConfigured && <p role="note">Esta minuta exige revisão jurídica e aprovação do responsável antes da publicação comercial.</p>}
     <h2>Finalidade e acesso</h2>
-    <p>O Eu Rico é um MVP de organização pessoal de tarefas, receitas, despesas e metas. O acesso usa sua conta Google por meio do Supabase Auth. O produto não movimenta dinheiro, não se conecta a bancos e não oferece aconselhamento financeiro ou de investimento. Confira os cálculos e registros antes de tomar decisões.</p>
-    <h2>Dados na conta, sincronização e backups</h2>
-    <p>Na versão com banco ativado, os registros confirmados são vinculados à sua conta no Supabase e carregados em outros dispositivos ao entrar ou recarregar. Aguarde a confirmação de salvamento antes de sair. Não há modo offline completo nem atualização em tempo real. Em conflito entre versões, a gravação é rejeitada; exporte a alteração pendente e recarregue antes de tentar novamente.</p>
-    <p>Dados locais anteriores não são enviados automaticamente: confira a prévia e confirme a conta de destino. Os originais são preservados. Cópias locais de recuperação e alterações não confirmadas podem ser perdidas ao limpar o site ou perder o dispositivo. Não use o mesmo perfil do navegador em dispositivo compartilhado para guardar informações confidenciais.</p>
-    <p>Exporte backups regularmente e proteja os arquivos, que contêm informações legíveis e podem incluir o identificador da conta. Restaurar um arquivo substitui os registros da conta atual na nuvem, após validação e confirmação, e cria uma cópia privada da versão anterior. Os demais dispositivos verão a mudança ao recarregar. Só importe registros que você tem autorização para usar. Sair não apaga registros locais, dados da nuvem ou backups exportados.</p>
-    <h2>Uso responsável</h2>
-    <p>Use apenas dados que você tem direito de registrar. Proteja sua conta, seu dispositivo e seus backups. Não use o serviço para atividades ilícitas ou para tentar acessar contas de outras pessoas. O MVP não é direcionado a crianças e adolescentes.</p>
-    <h2>Disponibilidade e alterações</h2>
-    <p>O MVP pode conter falhas e sofrer interrupções ou alterações. Não há garantia de disponibilidade contínua. Mudanças relevantes nas condições de uso e no tratamento de dados deverão ser comunicadas. Estes termos não afastam direitos previstos na legislação aplicável.</p>
-    <h2>Responsável e contato</h2>
-    <p>{privacyController.name || 'Identificação pendente'}. Contato: {privacyController.privacyContact || 'Canal pendente'}.</p>
-    <p>Consulte a <a href="/privacidade">Política de Privacidade</a> para detalhes do tratamento de dados e solicitações sobre autenticação e exclusão de conta.</p>
+    <p>O Eu Rico organiza receitas, despesas, pagamentos registrados, metas, tarefas e anotações. Login com Google e Supabase identifica a conta. O produto não consulta bancos, movimenta dinheiro, contrata crédito ou oferece aconselhamento individualizado de investimento. Insights determinísticos são informativos e dependem da qualidade e cobertura dos registros.</p>
+    <p>Saldo registrado e projeções não são saldo bancário confirmado. Pagamentos futuros não integram o resultado realizado antes de sua data. Recorrência não cria dinheiro recebido ou pagamento automático.</p>
+    <h2 id="assinatura-cancelamento">Política de assinatura e cancelamento</h2>
+    <p>O plano para novas contratações é de <strong>{monthlyPrice}/mês</strong>, pelo Mercado Pago após ativação autorizada. Assinaturas anteriores na Cakto continuam com seu provedor. Contratos anteriores preservam preço e condições; esta atualização não converte cobranças passadas ou contratos ativos.</p>
+    <p>Periodicidade efetiva, data de renovação, meios de pagamento e condições devem ser apresentados na oferta real antes da contratação. Somente os meios habilitados no checkout serão aceitos; esta minuta não presume cartão, Pix ou boleto disponíveis. Uma prévia local não efetua cobrança nem comprova recorrência real.</p>
+    <p>A contratação depende da configuração e validação da oferta. O retorno do checkout, um parâmetro de URL ou uma imagem de comprovante não libera acesso. O backend precisa confirmar o vínculo com a conta e o período pago. Falha, recusa, reembolso e contestação podem impedir ou revogar acesso conforme o estado confirmado e os direitos aplicáveis.</p>
+    <p>Cancelamento deve ser solicitado na área Assinatura e conta, ou pelo contato de atendimento abaixo se o fluxo estiver indisponível. Solicitação recebida, cancelamento pendente e cancelamento confirmado são estados distintos. Não considere concluído antes da confirmação; se permanecer pendente, contate o atendimento com a referência da assinatura, sem enviar cartão, senha ou token.</p>
+    <p>O cancelamento confirmado interrompe cobranças futuras conforme o contrato do provedor. Seus efeitos no acesso seguem o contrato aplicável e o período confirmado no servidor. A regra final de novas ofertas precisa ser aprovada antes da ativação comercial; esta minuta não cria prazo de tolerância, isenção ou mudança de direitos em contratos existentes.</p>
+    <p>Reembolsos e arrependimento seguem a legislação e as condições válidas da contratação. Quando aplicável às contratações fora do estabelecimento, o art. 49 do Código de Defesa do Consumidor prevê arrependimento em sete dias. O canal de atendimento deve receber e analisar pedidos; esta minuta não cria exigência de renúncia a direitos nem promete reembolso automático por uma funcionalidade inexistente.</p>
+    <h2>Dados, persistência e backup</h2>
+    <p>Aguarde confirmação de salvamento antes de sair. Registros confirmados são carregados ao entrar ou recarregar; não há modo offline completo nem atualização em tempo real. Em conflito entre dispositivos, a gravação é recusada e o usuário deve escolher a versão, sem sobrescrever silenciosamente texto recente.</p>
+    <p>Rascunhos de notas em memória da sessão podem sobreviver à tela de verificação de assinatura, sem garantir persistência após fechar o navegador. Originais locais anteriores só são importados após prévia e confirmação. Backups contêm dados legíveis e devem ser protegidos.</p>
+    <p>Restaurar backup financeiro substitui registros financeiros da conta após validação e confirmação, preservando uma cópia anterior na transação. O backup financeiro não restaura notas. A exportação completa de conta identifica o backup financeiro e as notas separadamente; exportação e restauração não são operações equivalentes.</p>
+    <h2>Responsabilidades e disponibilidade</h2>
+    <p>Registre somente informações que tem direito de usar. Proteja conta, dispositivo e arquivos. Não tente acessar dados alheios ou explorar o serviço. O produto não é destinado a crianças e adolescentes. O usuário deve conferir registros, datas e cálculos antes de decisões; isso não exclui responsabilidades legais do fornecedor.</p>
+    <p>Falhas e manutenção podem causar indisponibilidade. Não há promessa de disponibilidade contínua. Suspensão por uso indevido e encerramento devem respeitar o contrato e direitos aplicáveis. Falta de assinatura não autoriza apagar dados automaticamente; a conta mantém meios de exportação e solicitação de exclusão previstos no serviço.</p>
+    <h2>Encerramento, retenção e direitos</h2>
+    <p>Pedido de exclusão requer verificação de identidade e análise de cobranças futuras e retenções. Não encerra uma assinatura no provedor por si só. Eliminar registros ativos não apaga arquivos já exportados, cópias de recuperação ou retenções legalmente necessárias. Consulte a <a href="/privacidade">Política de Privacidade</a> para práticas e solicitações.</p>
+    <h2>Responsável, contato e pendências de publicação</h2>
+    <p>{privacyController.name || 'Identificação pendente'}. Atendimento e privacidade: {privacyController.privacyContact || 'Canal pendente'}.</p>
+    <p>Pendente de confirmação do responsável: identificação formal aplicável, monitoramento do canal, configuração Mercado Pago e contratos Cakto anteriores, meios de pagamento, periodicidade, regra de acesso após cancelamento, procedimento de reembolso, retenções e comunicação de alterações. Nenhum prazo comercial ou dado cadastral pendente foi inventado. Mudanças materiais devem ser informadas; estes termos não afastam direitos previstos em lei.</p>
+    <p>Referência: <a href="https://www2.camara.leg.br/legin/fed/lei/1990/lei-8078-11-setembro-1990-365086-normaatualizada-pl.html">Código de Defesa do Consumidor</a>. A publicação exige revisão jurídica apropriada; não constitui certificação de conformidade.</p>
   </article></main>
 }

@@ -4,8 +4,9 @@ import assert from 'node:assert/strict'
 import crypto from 'node:crypto'
 
 export const PAYMENT_GUARD_MIGRATION = 'supabase/migrations/20261104023257_expense_payment_guard.sql'
+export const BILLING_MIGRATION = 'supabase/migrations/20261115125136_billing_local_monetization.sql'
 
-export async function createTestDatabase({ applyConflictPatch = true, applyPaymentGuard = true } = {}) {
+export async function createTestDatabase({ applyConflictPatch = true, applyPaymentGuard = true, applyBilling = false, applyCommercialExpansion = true } = {}) {
   const db = new PGlite()
   await db.exec(`create role anon; create role authenticated;
     create schema auth; create table auth.users(id uuid primary key);
@@ -29,6 +30,11 @@ export async function createTestDatabase({ applyConflictPatch = true, applyPayme
   } catch (error) { await db.close(); throw error }
   if (applyConflictPatch && applyPaymentGuard) try { await db.exec(await readFile(PAYMENT_GUARD_MIGRATION, 'utf8')) }
   catch (error) { await db.close(); throw error }
+  if (applyBilling) try {
+    await db.exec('create role service_role;')
+    await db.exec(await readFile(BILLING_MIGRATION, 'utf8'))
+    if (applyCommercialExpansion) await db.exec(await readFile('supabase/launch-commercial-expand.sql', 'utf8'))
+  } catch (error) { await db.close(); throw error }
   return db
 }
 
